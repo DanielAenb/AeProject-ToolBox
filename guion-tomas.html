@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guion de tomas · Ae Project .studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/base.css" />
+
+<style>
+  /* ============================================================
+     Header de aplicación
+     ============================================================ */
+  .app-header {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 24px;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .app-header .brand {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .app-header .brand-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-subtle);
+  }
+  .app-header .brand-name { font-size: 14px; }
+  .app-header .brand-tld { color: var(--text-subtle); font-size: 14px; font-weight: 400; }
+  .app-header .tool-name {
+    font-size: 13px; color: var(--text-muted);
+    padding-left: 12px; margin-left: 4px;
+    border-left: 1px solid var(--border);
+  }
+  .app-header .spacer { flex: 1; }
+  .app-header .actions { display: flex; gap: 6px; align-items: center; }
+
+  .theme-toggle {
+    width: 34px; height: 34px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--r-md);
+    color: var(--text-muted);
+    transition: all var(--dur) var(--ease);
+  }
+  .theme-toggle:hover { background: var(--surface-2); color: var(--text); }
+  .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+  /* ============================================================
+     Layout
+     ============================================================ */
+  .gt-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px;
+    padding: 20px 24px 80px;
+    max-width: 1480px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head .sh-title {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .section-head .sh-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-subtle);
+  }
+  .section-head .spacer { flex: 1; }
+  .section-body { padding: 18px; }
+
+  /* ============================================================
+     Secuencia
+     ============================================================ */
+  .seq-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    min-height: 200px;
+    scroll-snap-type: x proximity;
+  }
+  .seq-strip::-webkit-scrollbar { height: 8px; }
+  .seq-strip::-webkit-scrollbar-thumb {
+    background: var(--surface-3); border-radius: 4px;
+  }
+
+  .seq-empty {
+    border: 1px dashed var(--border);
+    border-radius: var(--r-md);
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    width: 100%;
+  }
+
+  .seq-item {
+    flex: 0 0 240px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    scroll-snap-align: start;
+    transition: border-color var(--dur) var(--ease),
+                opacity var(--dur) var(--ease);
+  }
+  .seq-item:hover { border-color: var(--border-strong); }
+  .seq-item.grabada {
+    opacity: 0.55;
+  }
+  .seq-item.grabada .seq-thumb::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    background: rgba(16, 185, 129, 0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--success);
+    font-size: 40px; font-weight: 700;
+    backdrop-filter: blur(1px);
+  }
+
+  .seq-top {
+    display: flex; align-items: center; gap: 6px;
+    min-width: 0;
+  }
+  .seq-num {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 600;
+    color: var(--text-subtle);
+    background: var(--surface-3);
+    width: 20px; height: 20px;
+    border-radius: var(--r-xs);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .chip-select {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    height: 20px;
+    padding: 0 18px 0 8px;
+    cursor: pointer;
+    min-width: 0;
+    max-width: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%239a9aa3' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    text-overflow: ellipsis;
+    transition: all var(--dur) var(--ease);
+  }
+  .chip-select:hover { border-color: var(--border-strong); }
+  .chip-select:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 2px var(--brand-glow);
+  }
+  .chip-select.marker { flex: 1; min-width: 0; }
+  .chip-select.trans { flex: 0 0 auto; max-width: 92px; }
+
+  /* Colores del selector de marcador según el tipo */
+  .chip-select.marker[data-value="hook"]     { background-color: var(--brand-subtle); color: var(--brand); border-color: transparent; }
+  .chip-select.marker[data-value="contexto"] { background-color: var(--info-subtle); color: var(--info); border-color: transparent; }
+  .chip-select.marker[data-value="desarrollo"] { background-color: var(--surface-3); color: var(--text-muted); border-color: transparent; }
+  .chip-select.marker[data-value="cta"]      { background-color: var(--success-subtle); color: var(--success); border-color: transparent; }
+  .chip-select.marker[data-value="cierre"]   { background-color: var(--warning-subtle); color: var(--warning); border-color: transparent; }
+
+  .seq-remove {
+    width: 20px; height: 20px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-xs);
+    color: var(--text-subtle);
+    flex-shrink: 0;
+    transition: all var(--dur) var(--ease);
+  }
+  .seq-remove:hover { background: var(--danger-subtle); color: var(--danger); }
+
+  .seq-thumb {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--surface-3), var(--surface-2));
+    border-radius: var(--r-sm);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .seq-thumb video,
+  .seq-thumb iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border: 0;
+    background: #000;
+  }
+  .seq-thumb .thumb-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-subtle);
+  }
+  .seq-dur {
+    position: absolute;
+    bottom: 6px; right: 6px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 2px 6px;
+    border-radius: var(--r-xs);
+    font-variant-numeric: tabular-nums;
+    z-index: 2;
+    letter-spacing: 0;
+  }
+
+  .seq-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+    padding: 0 2px;
+  }
+
+  .seq-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .seq-controls .mini {
+    width: 22px; height: 22px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-xs);
+    color: var(--text-subtle);
+    transition: all var(--dur) var(--ease);
+  }
+  .seq-controls .mini:hover { background: var(--surface-3); color: var(--text); }
+  .seq-controls .mini.active { color: var(--success); background: var(--success-subtle); }
+  .seq-controls .mini.danger:hover { background: var(--danger-subtle); color: var(--danger); }
+
+  .seq-dur-input {
+    width: 44px;
+    height: 22px;
+    padding: 0 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xs);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .seq-dur-input:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 2px var(--brand-glow);
+  }
+  .seq-controls .unit {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-subtle);
+  }
+
+  .seq-nota {
+    width: 100%;
+    font: inherit;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--r-xs);
+    padding: 4px 6px;
+    resize: none;
+    min-height: 44px;
+    transition: all var(--dur) var(--ease);
+  }
+  .seq-nota::placeholder { color: var(--text-subtle); font-style: italic; }
+  .seq-nota:hover { border-color: var(--border); }
+  .seq-nota:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--brand);
+    color: var(--text);
+    box-shadow: 0 0 0 2px var(--brand-glow);
+  }
+
+  /* Barra de resumen de la secuencia */
+  .seq-summary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    flex-wrap: wrap;
+  }
+  .seq-summary .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .seq-summary .stat .v {
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .seq-summary .stat .k {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-subtle);
+  }
+  .seq-summary .badge-dur.ok { background: var(--success-subtle); color: var(--success); }
+  .seq-summary .badge-dur.warn { background: var(--warning-subtle); color: var(--warning); }
+  .seq-summary .badge-dur.over { background: var(--danger-subtle); color: var(--danger); }
+
+  /* ============================================================
+     Guion
+     ============================================================ */
+  .guion-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    flex-wrap: wrap;
+  }
+  .guion-toolbar .stats {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-subtle);
+  }
+  .guion-toolbar .stats strong {
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .guion-editor {
+    width: 100%;
+    min-height: 260px;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    background: transparent;
+    padding: 18px;
+    border: 0;
+    resize: vertical;
+  }
+  .guion-editor:focus { outline: none; }
+  .guion-editor::placeholder { color: var(--text-subtle); }
+
+  /* ============================================================
+     Biblioteca
+     ============================================================ */
+  .lib-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    flex-wrap: wrap;
+  }
+  .lib-toolbar .search {
+    flex: 0 0 220px;
+  }
+  .lib-toolbar .filters {
+    display: flex; gap: 4px;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: var(--r-full);
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all var(--dur) var(--ease);
+  }
+  .filter-chip:hover { border-color: var(--border-strong); color: var(--text); }
+  .filter-chip.active {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+
+  .lib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .lib-card {
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 8px;
+    display: flex; flex-direction: column; gap: 6px;
+    cursor: pointer;
+    transition: border-color var(--dur) var(--ease),
+                transform var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+  }
+  .lib-card:hover {
+    transform: translateY(-2px);
+    border-color: transparent;
+    box-shadow: var(--shadow-md);
+  }
+  .lib-card:active { transform: translateY(0); }
+  .lib-card .lib-thumb {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--surface-3), var(--surface-2));
+    border-radius: var(--r-sm);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lib-card .lib-thumb video,
+  .lib-card .lib-thumb iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border: 0;
+    background: #000;
+  }
+  .lib-card .lib-thumb .thumb-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-subtle);
+  }
+  .lib-card .lib-name {
+    font-size: 12.5px; font-weight: 600;
+    line-height: 1.3;
+    padding: 0 2px;
+  }
+  .lib-card .lib-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.45;
+    padding: 0 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lib-card .lib-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 2px 0;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-subtle);
+  }
+
+  /* ============================================================
+     Sidebar
+     ============================================================ */
+  .sidebar { position: sticky; top: 84px; }
+  .sidebar .field + .field { margin-top: 12px; }
+
+  .plantillas-list { display: flex; flex-direction: column; gap: 6px; }
+  .plantilla {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: 12.5px;
+    transition: all var(--dur) var(--ease);
+  }
+  .plantilla:hover { border-color: var(--border-strong); }
+  .plantilla .pl-name {
+    flex: 1;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    color: var(--text);
+  }
+  .plantilla .pl-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-subtle);
+    flex-shrink: 0;
+  }
+  .plantilla button {
+    width: 22px; height: 22px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-xs);
+    color: var(--text-subtle);
+    transition: all var(--dur) var(--ease);
+    flex-shrink: 0;
+  }
+  .plantilla button:hover { background: var(--surface-3); color: var(--text); }
+  .plantilla button.danger:hover { background: var(--danger-subtle); color: var(--danger); }
+
+  /* ============================================================
+     Modo reproducción
+     ============================================================ */
+  #play {
+    position: fixed; inset: 0;
+    z-index: 200;
+    background: #05070a;
+    color: #fff;
+    display: none;
+    flex-direction: column;
+  }
+  #play.on { display: flex; }
+  #play .play-top {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  #play .play-top .play-title { font-weight: 600; font-size: 14px; }
+  #play .play-top .play-counter {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-variant-numeric: tabular-nums;
+  }
+  #play .play-top .spacer { flex: 1; }
+  #play .play-top button {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 12px;
+    border-radius: var(--r-md);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all var(--dur) var(--ease);
+  }
+  #play .play-top button:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+  #play .play-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 20px;
+    min-height: 0;
+  }
+  #play .play-screen {
+    width: min(1100px, 100%);
+    aspect-ratio: 16/9;
+    background: #0b0d10;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--r-lg);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #play .play-screen video,
+  #play .play-screen iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+    border: 0;
+    background: #000;
+  }
+  #play .play-screen .ph {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+  #play .play-info {
+    text-align: center;
+    max-width: 720px;
+    display: flex; flex-direction: column; gap: 8px;
+    align-items: center;
+  }
+  #play .play-info .play-marcador {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+  }
+  #play .play-info .play-name {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  #play .play-info .play-nota {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+  #play .play-progress {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 24px;
+  }
+  #play .play-progress .bar {
+    height: 100%;
+    background: var(--brand);
+    transition: width 260ms var(--ease);
+  }
+  #play .play-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 24px 22px;
+  }
+  #play .play-controls button {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 9px 16px;
+    border-radius: var(--r-md);
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--dur) var(--ease);
+  }
+  #play .play-controls button:hover { background: rgba(255, 255, 255, 0.14); }
+  #play .play-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+  #play .play-hint {
+    text-align: center;
+    padding: 0 24px 16px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================================================
+     Modal
+     ============================================================ */
+  .modal-head {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .modal-title {
+    flex: 1;
+    font-size: 16px; font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .modal-x {
+    width: 28px; height: 28px;
+    margin: -4px -4px 0 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-sm);
+    color: var(--text-subtle);
+    transition: all var(--dur) var(--ease);
+  }
+  .modal-x:hover { background: var(--surface-2); color: var(--text); }
+  .modal-body {
+    font-size: 13.5px; color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .modal-input { margin-bottom: 20px; }
+  .modal-actions {
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  /* ============================================================
+     Toast host
+     ============================================================ */
+  .toast-host {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 400;
+    display: flex; flex-direction: column; gap: 8px;
+    pointer-events: none;
+  }
+  .toast-host .toast {
+    pointer-events: auto;
+    animation: toastIn 260ms var(--ease);
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 1080px) {
+    .gt-main { grid-template-columns: 1fr; padding: 16px; }
+    .sidebar { position: static; }
+    .app-header { padding: 10px 16px; flex-wrap: wrap; }
+    .app-header .tool-name { display: none; }
+  }
+  @media (max-width: 520px) {
+    .lib-toolbar .search { flex: 1 1 100%; }
+    .app-header .actions .label-hide { display: none; }
+    .seq-summary { gap: 12px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================ HEADER -->
+<header class="app-header">
+  <a href="../index.html" class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Ae Project</span>
+    <span class="brand-tld">.studio</span>
+  </a>
+  <span class="tool-name">Guion de tomas</span>
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <button class="btn btn-ghost btn-sm" id="btnNueva" title="Nueva secuencia">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="label-hide">Nueva</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnCopiarGuion" title="Copiar guion">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span class="label-hide">Guion</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnExportar" title="Exportar JSON">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <span class="label-hide">Exportar</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnImportar" title="Importar JSON">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
+      <span class="label-hide">Importar</span>
+    </button>
+    <button class="btn btn-secondary btn-sm" id="btnGuardarPlantilla" title="Guardar como plantilla">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span class="label-hide">Plantilla</span>
+    </button>
+    <button class="btn btn-primary btn-sm" id="btnPlay" title="Reproducir secuencia">
+      <svg class="icon icon-sm" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 3 20 12 6 21"/></svg>
+      Play
+    </button>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================ MAIN -->
+<main class="gt-main">
+
+  <!-- ============ COLUMNA PRINCIPAL ============ -->
+  <div>
+
+    <!-- ---------- SECUENCIA ---------- -->
+    <section class="section">
+      <div class="seq-summary">
+        <div class="stat">
+          <span class="v" id="statTomas">0</span>
+          <span class="k">tomas</span>
+        </div>
+        <div class="stat">
+          <span class="v" id="statDuracion">0s</span>
+          <span class="k">duración</span>
+        </div>
+        <span class="badge badge-dur ok" id="badgeDur">—</span>
+        <div class="spacer" style="flex:1"></div>
+        <span class="mono" style="color:var(--text-subtle)" id="statRead">0 palabras</span>
+      </div>
+
+      <div class="section-body">
+        <div class="seq-strip" id="seqStrip">
+          <div class="seq-empty">
+            Aún no hay tomas.<br>
+            Haz clic en cualquier toma de la biblioteca de abajo para añadirla.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- GUION ---------- -->
+    <section class="section">
+      <div class="guion-toolbar">
+        <span class="sh-title">Guion</span>
+        <button class="btn btn-secondary btn-sm" id="btnCopiarGuion2">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btnLimpiarGuion" style="color:var(--danger)">
+          Limpiar
+        </button>
+        <div class="stats">
+          <span><strong id="statWords">0</strong> palabras</span>
+          <span><strong id="statChars">0</strong> caracteres</span>
+          <span><strong id="statReadTime">0:00</strong> lectura</span>
+        </div>
+      </div>
+      <textarea
+        class="guion-editor"
+        id="guionEditor"
+        placeholder="Escribe aquí el guion completo. Luego puedes copiarlo y pegarlo en tu teleprompter (Notas, Google Docs, cualquier app que soporte texto)."
+      ></textarea>
+    </section>
+
+    <!-- ---------- BIBLIOTECA ---------- -->
+    <section class="section">
+      <div class="lib-toolbar">
+        <div class="search">
+          <div class="input-wrap">
+            <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="input with-icon" id="libSearch" placeholder="Buscar toma…" />
+          </div>
+        </div>
+        <div class="filters" id="libFilters"></div>
+      </div>
+      <div class="lib-grid" id="libGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+
+    <section class="section">
+      <div class="section-head">
+        <span class="sh-title">Propiedades</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label class="field-label">Título de la secuencia</label>
+          <input class="input" type="text" id="titulo" placeholder="Ej. Reel tutorial · producto" />
+        </div>
+        <div class="field">
+          <label class="field-label">Cliente / proyecto</label>
+          <input class="input" type="text" id="cliente" placeholder="Opcional" />
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <span class="sh-title">Plantillas</span>
+        <div class="spacer"></div>
+        <span class="sh-count" id="badgePlantillas">0</span>
+      </div>
+      <div class="section-body">
+        <button class="btn btn-secondary btn-sm" id="btnNuevaPlantilla" style="width:100%;margin-bottom:12px">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Guardar actual como plantilla
+        </button>
+        <div class="plantillas-list" id="plantillasList"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <span class="sh-title">Acciones</span>
+      </div>
+      <div class="section-body" style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-secondary btn-sm" id="btnExportarTexto">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Exportar como texto
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btnLimpiarTodo" style="color:var(--danger)">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          Vaciar todo
+        </button>
+      </div>
+    </section>
+
+  </aside>
+
+</main>
+
+<!-- ============================================================ PLAY MODE -->
+<div id="play">
+  <div class="play-top">
+    <span class="play-title" id="playTitle">—</span>
+    <span class="play-counter" id="playCounter">0 / 0</span>
+    <div class="spacer"></div>
+    <button id="btnClosePlay">Salir (Esc)</button>
+  </div>
+  <div class="play-stage">
+    <div class="play-screen" id="playScreen"></div>
+    <div class="play-info">
+      <span class="play-marcador" id="playMarcador" hidden></span>
+      <div class="play-name" id="playName">—</div>
+      <div class="play-nota" id="playNota"></div>
+    </div>
+  </div>
+  <div class="play-progress"><div class="bar" id="playBar" style="width:0"></div></div>
+  <div class="play-controls">
+    <button id="btnPrev">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Anterior
+    </button>
+    <button id="btnNext">
+      Siguiente
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+  <div class="play-hint">← → navegar · Esc salir · Inicio/Fin saltar</div>
+</div>
+
+<!-- ============================================================ MODAL -->
+<div class="modal" id="appModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="modalBody"></p>
+    <div class="modal-input" id="modalInputWrap" hidden>
+      <input class="input" id="modalInput" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close id="modalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="modalConfirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-host" id="toastHost"></div>
+
+<script src="../assets/utils.js"></script>
+<script>
+/* ============================================================
+   BIBLIOTECA DE TOMAS
+   
+   📹 CÓMO AÑADIR VÍDEOS DE EJEMPLO
+   
+   El campo "video" acepta tres formatos:
+   
+   1) Vacío ("") → placeholder gris con el nombre del tipo.
+      Ideal mientras no tengas clips grabados.
+   
+   2) Archivo local → "clips/cenital.mp4"
+      Crea una carpeta "clips/" junto a este archivo HTML y
+      mete los MP4 ahí. Se reproducen en bucle, silenciados.
+   
+   3) YouTube embed → "https://www.youtube.com/embed/VIDEO_ID"
+      Toma el ID del video (la parte después de watch?v= en la URL).
+      Ejemplo: si la URL es youtube.com/watch?v=abc123XYZ
+      entonces el embed es "https://www.youtube.com/embed/abc123XYZ"
+   
+   📐 DURACIÓN SUGERIDA
+   "duracion" es en segundos. Es solo un valor por defecto que
+   aparece al añadir la toma a la secuencia. Se puede editar
+   luego por toma, individualmente, en la secuencia misma.
+   
+   📂 TIPO / CATEGORÍA
+   Se usa para el filtro de la biblioteca. Debe ser uno de:
+   "Encuadre" | "Ángulo" | "Movimiento" | "Recurso"
+   ============================================================ */
+const SHOTS = [
+  /* ---------- ENCUADRES ---------- */
+  { id:"general",     cat:"Encuadre",   nombre:"Plano general",     descripcion:"Contexto completo de la escena.",              cuando_usar:"Presentar el lugar y la situación.",                  video:"", duracion:4,  tags:["contexto"] },
+  { id:"medio",       cat:"Encuadre",   nombre:"Plano medio",       descripcion:"De cintura hacia arriba.",                    cuando_usar:"Diálogo, presentación, talking head.",                video:"", duracion:4,  tags:["persona"] },
+  { id:"primer-plano",cat:"Encuadre",   nombre:"Primer plano",      descripcion:"Rostro o detalle de persona.",                cuando_usar:"Emoción, énfasis, reacción.",                         video:"", duracion:3,  tags:["persona","emoción"] },
+  { id:"detalle",     cat:"Encuadre",   nombre:"Plano detalle",     descripcion:"Objeto o parte muy concreta.",                cuando_usar:"Insertos, texturas, manos, producto.",                video:"", duracion:3,  tags:["inserto"] },
+
+  /* ---------- ÁNGULOS ---------- */
+  { id:"cenital",     cat:"Ángulo",     nombre:"Cenital",           descripcion:"Cámara arriba mirando hacia abajo.",           cuando_usar:"Mesas, patrones, mapas, comida, flat lay.",           video:"", duracion:4,  tags:["aéreo"] },
+  { id:"contrapicado",cat:"Ángulo",     nombre:"Contrapicado",      descripcion:"Cámara abajo mirando hacia arriba.",           cuando_usar:"Dar poder, dramatismo o altura.",                     video:"", duracion:4,  tags:["drama"] },
+  { id:"pov",         cat:"Ángulo",     nombre:"POV",               descripcion:"Vista en primera persona.",                   cuando_usar:"Inmersión, tutoriales, videojuegos.",                 video:"", duracion:4,  tags:["inmersivo"] },
+  { id:"ots",         cat:"Ángulo",     nombre:"Over the shoulder", descripcion:"Sobre el hombro de alguien.",                 cuando_usar:"Conversaciones, pantallas, escritorios.",             video:"", duracion:4,  tags:["conversación"] },
+
+  /* ---------- MOVIMIENTOS ---------- */
+  { id:"zoom-in",     cat:"Movimiento", nombre:"Zoom in",           descripcion:"Acercarse al sujeto.",                        cuando_usar:"Dirigir atención a un detalle.",                      video:"", duracion:4,  tags:["zoom"] },
+  { id:"zoom-out",    cat:"Movimiento", nombre:"Zoom out",          descripcion:"Alejarse del sujeto.",                        cuando_usar:"Revelar contexto, cerrar una idea.",                  video:"", duracion:5,  tags:["zoom"] },
+  { id:"paneo",       cat:"Movimiento", nombre:"Paneo",             descripcion:"Giro horizontal de la cámara.",               cuando_usar:"Mostrar un espacio amplio, panorámica.",              video:"", duracion:5,  tags:["horizontal"] },
+  { id:"tilt",        cat:"Movimiento", nombre:"Tilt",              descripcion:"Giro vertical de la cámara.",                 cuando_usar:"Revelar altura, edificios, cuerpos.",                 video:"", duracion:4,  tags:["vertical"] },
+  { id:"dolly",       cat:"Movimiento", nombre:"Dolly",             descripcion:"Desplazamiento físico de la cámara.",         cuando_usar:"Sensación cinematográfica, entrada de personaje.",    video:"", duracion:6,  tags:["cine"] },
+  { id:"tracking",    cat:"Movimiento", nombre:"Tracking",          descripcion:"Cámara sigue a un sujeto en movimiento.",     cuando_usar:"Acción, caminatas, deportes.",                        video:"", duracion:6,  tags:["acción"] },
+  { id:"secuencia",   cat:"Movimiento", nombre:"Plano secuencia",   descripcion:"Toma larga sin cortes.",                      cuando_usar:"Momentos inmersivos y continuos.",                    video:"", duracion:12, tags:["largo"] },
+
+  /* ---------- RECURSOS ---------- */
+  { id:"inserto",     cat:"Recurso",    nombre:"Inserto",           descripcion:"Toma breve que apoya la acción.",             cuando_usar:"Ritmo, transición, detalle entre tomas largas.",      video:"", duracion:2,  tags:["corto"] },
+];
+
+/* ============================================================
+   MARCADORES (a qué parte del relato pertenece cada toma)
+   ============================================================ */
+const MARCADORES = [
+  { id:"hook",       label:"Hook" },
+  { id:"contexto",   label:"Contexto" },
+  { id:"desarrollo", label:"Desarrollo" },
+  { id:"cta",        label:"CTA" },
+  { id:"cierre",     label:"Cierre" },
+];
+
+/* ============================================================
+   TRANSICIONES (cómo se pasa de la toma anterior a esta)
+   ============================================================ */
+const TRANSICIONES = [
+  { id:"cut",     label:"Corte" },
+  { id:"fade",    label:"Fundido" },
+  { id:"whip",    label:"Whip pan" },
+  { id:"zoom",    label:"Zoom blur" },
+  { id:"match",   label:"Match cut" },
+  { id:"glitch",  label:"Glitch" },
+  { id:"slide",   label:"Slide" },
+];
+
+/* ============================================================
+   ESTADO Y PERSISTENCIA
+   ============================================================ */
+const LS_KEY = "guion-tomas-v1";
+
+let state = {
+  titulo: "",
+  cliente: "",
+  guion: "",
+  items: [],       // [{ sid, shotId, nota, duracion, marcador, transicion, grabada }]
+  plantillas: [],  // [{ id, nombre, fecha, snapshot }]
+};
+
+function save() { store.set(LS_KEY, state); }
+function load() {
+  const s = store.get(LS_KEY);
+  if (s) state = { ...state, ...s };
+}
+
+const shot = id => SHOTS.find(s => s.id === id);
+const marcador = id => MARCADORES.find(m => m.id === id);
+const transicion = id => TRANSICIONES.find(t => t.id === id);
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const fmtDur = s => {
+  s = Math.max(0, Math.round(Number(s) || 0));
+  if (s < 60) return s + "s";
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return r === 0 ? m + "m" : m + "m " + r + "s";
+};
+
+const isYT = url => /youtube\.com|youtu\.be/.test(url || "");
+
+function thumbHTML(video, tipo) {
+  if (!video) return `<div class="thumb-label">${escapeHTML(tipo || "—")}</div>`;
+  if (isYT(video)) {
+    const id = (video.split("/").pop() || "").split("?")[0];
+    return `<iframe src="${video}?mute=1&controls=0&loop=1&playlist=${id}" allow="autoplay; encrypted-media" loading="lazy"></iframe>`;
+  }
+  return `<video src="${escapeHTML(video)}" muted loop playsinline preload="metadata"></video>`;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+const Modal = (() => {
+  const el = () => $('#appModal');
+  let onConfirmCb = null;
+  let keyHandler = null;
+
+  function open({ title, body, input, placeholder, defaultValue, confirmLabel = 'Confirmar', cancelLabel = 'Cancelar', danger = false, onConfirm }) {
+    $('#modalTitle').textContent = title || '';
+    const bodyEl = $('#modalBody');
+    bodyEl.textContent = body || '';
+    bodyEl.hidden = !body;
+
+    const inputWrap = $('#modalInputWrap');
+    const inputEl = $('#modalInput');
+    if (input) {
+      inputWrap.hidden = false;
+      inputEl.placeholder = placeholder || '';
+      inputEl.value = defaultValue || '';
+    } else {
+      inputWrap.hidden = true;
+      inputEl.value = '';
+    }
+
+    const confirmBtn = $('#modalConfirm');
+    confirmBtn.textContent = confirmLabel;
+    confirmBtn.className = 'btn ' + (danger ? 'btn-danger' : 'btn-primary');
+    $('#modalCancel').textContent = cancelLabel;
+
+    onConfirmCb = onConfirm;
+    el().classList.add('on');
+    setTimeout(() => {
+      if (input) { inputEl.focus(); inputEl.select(); }
+      else confirmBtn.focus();
+    }, 60);
+
+    keyHandler = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'Enter' && e.target && e.target.id !== 'modalCancel') {
+        e.preventDefault();
+        triggerConfirm();
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+  }
+
+  function triggerConfirm() {
+    const hasInput = !$('#modalInputWrap').hidden;
+    const value = hasInput ? $('#modalInput').value.trim() : null;
+    const result = onConfirmCb ? onConfirmCb(value) : true;
+    if (result !== false) close();
+  }
+
+  function close() {
+    el().classList.remove('on');
+    onConfirmCb = null;
+    if (keyHandler) document.removeEventListener('keydown', keyHandler);
+    keyHandler = null;
+  }
+
+  function init() {
+    el().querySelectorAll('[data-close]').forEach(n => n.addEventListener('click', close));
+    $('#modalConfirm').addEventListener('click', triggerConfirm);
+  }
+  return { open, close, init };
+})();
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(title, desc = '', variant = 'brand') {
+  const icons = {
+    brand:   '<svg class="icon toast-icon" viewBox="0 0 24 24"><path d="M12 2v6l4 2"/><path d="M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0z"/></svg>',
+    success: '<svg class="icon toast-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    danger:  '<svg class="icon toast-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>',
+    info:    '<svg class="icon toast-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  };
+  const el = document.createElement('div');
+  el.className = `toast ${variant}`;
+  el.innerHTML = `
+    ${icons[variant] || icons.info}
+    <div style="flex:1">
+      <div class="toast-title">${escapeHTML(title)}</div>
+      ${desc ? `<div class="toast-desc">${escapeHTML(desc)}</div>` : ''}
+    </div>
+    <button class="toast-close" aria-label="Cerrar">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  `;
+  el.querySelector('.toast-close').addEventListener('click', () => el.remove());
+  $('#toastHost').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }, 3600);
+}
+
+/* ============================================================
+   BIBLIOTECA
+   ============================================================ */
+let libFilter = "all";
+let libSearch = "";
+
+function renderFilters() {
+  const cats = ["all", ...new Set(SHOTS.map(s => s.cat))];
+  $('#libFilters').innerHTML = cats.map(c => `
+    <button class="filter-chip ${c === libFilter ? 'active' : ''}" data-filter="${c}">
+      ${c === 'all' ? 'Todas' : escapeHTML(c)}
+    </button>
+  `).join('');
+  $$('[data-filter]').forEach(b => b.addEventListener('click', () => {
+    libFilter = b.dataset.filter;
+    renderFilters(); renderLib();
+  }));
+}
+
+function renderLib() {
+  const q = libSearch.toLowerCase().trim();
+  const list = SHOTS.filter(s => {
+    if (libFilter !== "all" && s.cat !== libFilter) return false;
+    if (!q) return true;
+    return (s.nombre + " " + s.descripcion + " " + (s.tags || []).join(" ")).toLowerCase().includes(q);
+  });
+  if (list.length === 0) {
+    $('#libGrid').innerHTML = `<div class="empty-msg" style="grid-column:1/-1">Sin resultados.</div>`;
+    return;
+  }
+  $('#libGrid').innerHTML = list.map(s => `
+    <button class="lib-card" data-add="${s.id}">
+      <div class="lib-thumb">${thumbHTML(s.video, s.cat)}</div>
+      <div class="lib-name">${escapeHTML(s.nombre)}</div>
+      <div class="lib-desc">${escapeHTML(s.descripcion)}</div>
+      <div class="lib-foot">
+        <span>${escapeHTML(s.cat)}</span>
+        <span>~${fmtDur(s.duracion)}</span>
+      </div>
+    </button>
+  `).join('');
+  $$('[data-add]').forEach(el => el.addEventListener('click', () => addShot(el.dataset.add)));
+}
+
+/* ============================================================
+   SECUENCIA
+   ============================================================ */
+function addShot(shotId) {
+  const s = shot(shotId);
+  if (!s) return;
+  // Si es la primera, no tiene transición. Si no, pone "cut" por defecto.
+  const prev = state.items[state.items.length - 1];
+  state.items.push({
+    shotId,
+    nota: "",
+    duracion: s.duracion || 3,
+    marcador: "",
+    transicion: prev ? (prev.transicion || "cut") : "",
+    grabada: false,
+  });
+  save(); renderSecuencia();
+}
+
+function removeItem(i) {
+  state.items.splice(i, 1);
+  save(); renderSecuencia();
+}
+
+function moveItem(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= state.items.length) return;
+  [state.items[i], state.items[j]] = [state.items[j], state.items[i]];
+  save(); renderSecuencia();
+}
+
+function duplicateItem(i) {
+  const it = state.items[i];
+  const copy = { ...it, nota: it.nota };
+  state.items.splice(i + 1, 0, copy);
+  save(); renderSecuencia();
+}
+
+function updateItemField(i, field, value) {
+  state.items[i][field] = value;
+  save();
+}
+
+function renderSecuencia() {
+  const strip = $('#seqStrip');
+  const n = state.items.length;
+
+  if (n === 0) {
+    strip.innerHTML = `
+      <div class="seq-empty">
+        Aún no hay tomas.<br>
+        Haz clic en cualquier toma de la biblioteca de abajo para añadirla.
+      </div>
+    `;
+    updateSummary();
+    return;
+  }
+
+  strip.innerHTML = state.items.map((it, i) => {
+    const s = shot(it.shotId);
+    if (!s) return "";
+    const isFirst = i === 0;
+    const markerOpts = [
+      `<option value="">— marcador —</option>`,
+      ...MARCADORES.map(m => `<option value="${m.id}" ${it.marcador === m.id ? 'selected' : ''}>${m.label}</option>`)
+    ].join('');
+    const transOpts = TRANSICIONES.map(t => `<option value="${t.id}" ${it.transicion === t.id ? 'selected' : ''}>${t.label}</option>`).join('');
+    return `
+      <div class="seq-item ${it.grabada ? 'grabada' : ''}" data-i="${i}" draggable="true">
+        <div class="seq-top">
+          <span class="seq-num">${i + 1}</span>
+          <select class="chip-select marker" data-marcador="${i}" data-value="${escapeHTML(it.marcador || '')}">
+            ${markerOpts}
+          </select>
+          ${!isFirst ? `
+            <select class="chip-select trans" data-trans="${i}" title="Transición de entrada">
+              ${transOpts}
+            </select>
+          ` : ''}
+          <button class="seq-remove" data-remove="${i}" aria-label="Quitar">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="seq-thumb">
+          ${thumbHTML(s.video, s.cat)}
+          <span class="seq-dur">${fmtDur(it.duracion)}</span>
+        </div>
+
+        <div class="seq-name">${escapeHTML(s.nombre)}</div>
+
+        <div class="seq-controls">
+          <input type="number" class="seq-dur-input" data-dur="${i}" value="${it.duracion}" min="0" step="1" title="Duración (seg)" />
+          <span class="unit">s</span>
+          <div class="spacer" style="flex:1"></div>
+          <button class="mini ${it.grabada ? 'active' : ''}" data-grabada="${i}" title="Marcar como grabada">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+          <button class="mini" data-dup="${i}" title="Duplicar">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button class="mini" data-move-left="${i}" title="Mover izquierda" ${isFirst ? 'disabled style="opacity:.35"' : ''}>
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="mini" data-move-right="${i}" title="Mover derecha" ${i === n - 1 ? 'disabled style="opacity:.35"' : ''}>
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <textarea class="seq-nota" data-nota="${i}" placeholder="Nota para esta toma…" rows="2">${escapeHTML(it.nota || '')}</textarea>
+      </div>
+    `;
+  }).join('');
+
+  // Bindings
+  $$('[data-remove]').forEach(b => b.addEventListener('click', () => removeItem(+b.dataset.remove)));
+  $$('[data-dup]').forEach(b => b.addEventListener('click', () => duplicateItem(+b.dataset.dup)));
+  $$('[data-move-left]').forEach(b => b.addEventListener('click', () => moveItem(+b.dataset.moveLeft, -1)));
+  $$('[data-move-right]').forEach(b => b.addEventListener('click', () => moveItem(+b.dataset.moveRight, +1)));
+  $$('[data-grabada]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.grabada;
+    state.items[i].grabada = !state.items[i].grabada;
+    save(); renderSecuencia();
+  }));
+
+  $$('[data-dur]').forEach(inp => inp.addEventListener('input', () => {
+    const i = +inp.dataset.dur;
+    const v = inp.value === '' ? 0 : Number(inp.value);
+    state.items[i].duracion = v;
+    save();
+    const card = inp.closest('.seq-item');
+    if (card) card.querySelector('.seq-dur').textContent = fmtDur(v);
+    updateSummary();
+  }));
+
+  $$('[data-marcador]').forEach(sel => {
+    const update = () => {
+      sel.dataset.value = sel.value;
+      updateItemField(+sel.dataset.marcador, 'marcador', sel.value);
+    };
+    sel.addEventListener('change', update);
+  });
+
+  $$('[data-trans]').forEach(sel => sel.addEventListener('change', () => {
+    updateItemField(+sel.dataset.trans, 'transicion', sel.value);
+  }));
+
+  $$('[data-nota]').forEach(ta => {
+    autoResize(ta);
+    ta.addEventListener('input', () => {
+      updateItemField(+ta.dataset.nota, 'nota', ta.value);
+      autoResize(ta);
+    });
+  });
+
+  // Drag & drop básico
+  let dragIndex = null;
+  $$('.seq-item').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      dragIndex = +card.dataset.i;
+      card.style.opacity = '0.4';
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => { card.style.opacity = ''; });
+    card.addEventListener('dragover', e => { e.preventDefault(); });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      const target = +card.dataset.i;
+      if (dragIndex === null || dragIndex === target) return;
+      const [moved] = state.items.splice(dragIndex, 1);
+      state.items.splice(target, 0, moved);
+      save(); renderSecuencia();
+    });
+  });
+
+  updateSummary();
+}
+
+/* ============================================================
+   RESUMEN
+   ============================================================ */
+function updateSummary() {
+  const n = state.items.length;
+  const total = state.items.reduce((a, it) => a + (Number(it.duracion) || 0), 0);
+  $('#statTomas').textContent = n;
+  $('#statDuracion').textContent = fmtDur(total);
+
+  const badge = $('#badgeDur');
+  if (n === 0) {
+    badge.textContent = '—';
+    badge.className = 'badge badge-dur';
+  } else if (total < 30) {
+    badge.textContent = 'Reel corto';
+    badge.className = 'badge badge-dur ok';
+  } else if (total <= 60) {
+    badge.textContent = 'Reel estándar';
+    badge.className = 'badge badge-dur ok';
+  } else if (total <= 90) {
+    badge.textContent = 'Reel largo';
+    badge.className = 'badge badge-dur warn';
+  } else {
+    badge.textContent = 'Excede 90s';
+    badge.className = 'badge badge-dur over';
+  }
+
+  // Stats guion
+  const words = state.guion.trim() ? state.guion.trim().split(/\s+/).length : 0;
+  const chars = state.guion.length;
+  const readSec = Math.round((words / 150) * 60);
+  $('#statWords').textContent = words;
+  $('#statChars').textContent = chars;
+  $('#statReadTime').textContent = fmtDur(readSec);
+  $('#statRead').textContent = words + " palabras · " + fmtDur(readSec) + " lectura";
+}
+
+/* ============================================================
+   GUION
+   ============================================================ */
+function renderGuion() {
+  $('#guionEditor').value = state.guion || '';
+  updateSummary();
+}
+
+/* ============================================================
+   PLANTILLAS
+   ============================================================ */
+function renderPlantillas() {
+  $('#badgePlantillas').textContent = state.plantillas.length;
+  const el = $('#plantillasList');
+  if (state.plantillas.length === 0) {
+    el.innerHTML = `<span style="font-size:12px;color:var(--text-subtle)">Sin plantillas guardadas.</span>`;
+    return;
+  }
+  el.innerHTML = state.plantillas.map(p => `
+    <div class="plantilla">
+      <span class="pl-name" title="${escapeHTML(p.nombre)}">${escapeHTML(p.nombre)}</span>
+      <span class="pl-meta">${p.snapshot.items.length}t</span>
+      <button data-load-pl="${p.id}" title="Cargar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <button class="danger" data-del-pl="${p.id}" title="Eliminar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  `).join('');
+
+  $$('[data-load-pl]').forEach(b => b.addEventListener('click', () => {
+    const p = state.plantillas.find(x => x.id === b.dataset.loadPl);
+    if (!p) return;
+    Object.assign(state, JSON.parse(JSON.stringify(p.snapshot)));
+    save(); renderAll();
+    toast('Plantilla cargada', p.nombre, 'success');
+  }));
+  $$('[data-del-pl]').forEach(b => b.addEventListener('click', () => {
+    state.plantillas = state.plantillas.filter(x => x.id !== b.dataset.delPl);
+    save(); renderPlantillas();
+  }));
+}
+
+function guardarPlantilla() {
+  if (state.items.length === 0 && !state.guion.trim()) {
+    toast('Nada que guardar', 'Añade tomas o escribe un guion.', 'danger');
+    return;
+  }
+  const def = state.titulo || 'Plantilla ' + (state.plantillas.length + 1);
+  Modal.open({
+    title: 'Guardar plantilla',
+    body: 'Se guardará la secuencia actual (tomas, marcadores, transiciones y guion) para reutilizarla después.',
+    input: true,
+    placeholder: 'Ej. Reel tutorial producto',
+    defaultValue: def,
+    confirmLabel: 'Guardar',
+    onConfirm: (nombre) => {
+      if (!nombre) { toast('Nombre requerido', '', 'danger'); return false; }
+      const snapshot = {
+        titulo: state.titulo,
+        cliente: state.cliente,
+        guion: state.guion,
+        items: JSON.parse(JSON.stringify(state.items)),
+      };
+      state.plantillas.unshift({ id: 'p' + Date.now(), nombre, fecha: today(), snapshot });
+      save(); renderPlantillas();
+      toast('Plantilla guardada', nombre, 'success');
+    }
+  });
+}
+
+/* ============================================================
+   PLAY MODE
+   ============================================================ */
+let playIndex = 0;
+let playKeyHandler = null;
+
+function openPlay() {
+  if (state.items.length === 0) { toast('Nada que reproducir', 'Añade tomas primero.', 'danger'); return; }
+  playIndex = 0;
+  $('#play').classList.add('on');
+  renderPlay();
+  playKeyHandler = (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); playNext(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); playPrev(); }
+    else if (e.key === 'Escape') { e.preventDefault(); closePlay(); }
+    else if (e.key === 'Home') { e.preventDefault(); playIndex = 0; renderPlay(); }
+    else if (e.key === 'End') { e.preventDefault(); playIndex = state.items.length - 1; renderPlay(); }
+  };
+  document.addEventListener('keydown', playKeyHandler);
+}
+
+function closePlay() {
+  $('#play').classList.remove('on');
+  $('#playScreen').innerHTML = '';
+  if (playKeyHandler) document.removeEventListener('keydown', playKeyHandler);
+  playKeyHandler = null;
+}
+
+function playNext() {
+  if (playIndex < state.items.length - 1) { playIndex++; renderPlay(); }
+}
+function playPrev() {
+  if (playIndex > 0) { playIndex--; renderPlay(); }
+}
+
+function renderPlay() {
+  const it = state.items[playIndex];
+  const s = shot(it.shotId);
+  if (!s) return;
+
+  $('#playTitle').textContent = state.titulo || 'Secuencia';
+  $('#playCounter').textContent = `${playIndex + 1} / ${state.items.length}`;
+
+  const mEl = $('#playMarcador');
+  if (it.marcador) {
+    mEl.textContent = (marcador(it.marcador) || {}).label || it.marcador;
+    mEl.hidden = false;
+  } else {
+    mEl.hidden = true;
+  }
+
+  $('#playName').textContent = s.nombre;
+  $('#playNota').textContent = it.nota || s.descripcion || '';
+
+  const screen = $('#playScreen');
+  if (!s.video) {
+    screen.innerHTML = `<span class="ph">${escapeHTML(s.cat)} · ${escapeHTML(fmtDur(it.duracion))}</span>`;
+  } else if (isYT(s.video)) {
+    screen.innerHTML = `<iframe src="${s.video}?autoplay=1&mute=1&controls=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  } else {
+    screen.innerHTML = `<video src="${escapeHTML(s.video)}" autoplay loop muted playsinline controls></video>`;
+  }
+
+  $('#playBar').style.width = ((playIndex + 1) / state.items.length * 100) + '%';
+  $('#btnPrev').disabled = playIndex === 0;
+  $('#btnNext').disabled = playIndex === state.items.length - 1;
+}
+
+/* ============================================================
+   EXPORT / IMPORT
+   ============================================================ */
+function exportarSecuenciaTexto() {
+  if (state.items.length === 0 && !state.guion.trim()) {
+    toast('Nada que exportar', 'Añade tomas o escribe un guion.', 'danger');
+    return;
+  }
+  const lines = [];
+  lines.push(`# ${state.titulo || 'Secuencia'}`);
+  if (state.cliente) lines.push(`_Cliente: ${state.cliente}_`);
+  lines.push('');
+  lines.push(`**Tomas:** ${state.items.length} · **Duración total:** ${fmtDur(state.items.reduce((a, it) => a + (Number(it.duracion) || 0), 0))}`);
+  lines.push('');
+  lines.push('## Tomas');
+  state.items.forEach((it, i) => {
+    const s = shot(it.shotId);
+    const m = it.marcador ? ` [${(marcador(it.marcador) || {}).label}]` : '';
+    const t = i > 0 && it.transicion ? ` → ${(transicion(it.transicion) || {}).label}` : '';
+    lines.push(`${i + 1}. **${s ? s.nombre : it.shotId}**${m} — ${fmtDur(it.duracion)}${t}`);
+    if (it.nota) lines.push(`   ${it.nota}`);
+  });
+  if (state.guion.trim()) {
+    lines.push('');
+    lines.push('## Guion');
+    lines.push(state.guion);
+  }
+  const txt = lines.join('\n');
+  const blob = new Blob([txt], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (state.titulo || 'secuencia').replace(/\s+/g, '_').toLowerCase() + '.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Exportado', 'Documento de texto descargado.', 'success');
+}
+
+async function copiarGuion() {
+  if (!state.guion.trim()) { toast('Guion vacío', 'Escribe algo primero.', 'danger'); return; }
+  try {
+    await navigator.clipboard.writeText(state.guion);
+    toast('Guion copiado', 'Listo para pegar en el teleprompter.', 'success');
+  } catch {
+    toast('No se pudo copiar', 'Permisos de portapapeles bloqueados.', 'danger');
+  }
+}
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+$('#titulo').addEventListener('input', e => { state.titulo = e.target.value; save(); });
+$('#cliente').addEventListener('input', e => { state.cliente = e.target.value; save(); });
+$('#guionEditor').addEventListener('input', e => {
+  state.guion = e.target.value;
+  save();
+  updateSummary();
+});
+
+$('#libSearch').addEventListener('input', e => {
+  libSearch = e.target.value;
+  renderLib();
+});
+
+$('#btnPlay').addEventListener('click', openPlay);
+$('#btnClosePlay').addEventListener('click', closePlay);
+$('#btnPrev').addEventListener('click', playPrev);
+$('#btnNext').addEventListener('click', playNext);
+
+$('#btnGuardarPlantilla').addEventListener('click', guardarPlantilla);
+$('#btnNuevaPlantilla').addEventListener('click', guardarPlantilla);
+
+$('#btnExportar').addEventListener('click', () => {
+  exportJSON(state, (state.titulo || 'guion-tomas').replace(/\s+/g, '_').toLowerCase());
+  toast('Exportado', 'JSON con todo el estado.', 'success');
+});
+
+$('#btnImportar').addEventListener('click', () => {
+  importJSON(data => {
+    state = { ...state, ...data };
+    save(); renderAll();
+    toast('Importado correctamente', '', 'success');
+  });
+});
+
+$('#btnExportarTexto').addEventListener('click', exportarSecuenciaTexto);
+
+$('#btnCopiarGuion').addEventListener('click', copiarGuion);
+$('#btnCopiarGuion2').addEventListener('click', copiarGuion);
+
+$('#btnLimpiarGuion').addEventListener('click', () => {
+  if (!state.guion.trim()) return;
+  Modal.open({
+    title: 'Limpiar guion',
+    body: 'Se eliminará el guion actual. Las tomas y la secuencia no se tocan.',
+    confirmLabel: 'Limpiar',
+    danger: true,
+    onConfirm: () => {
+      state.guion = '';
+      save(); renderGuion();
+      toast('Guion limpiado', '', 'info');
+    }
+  });
+});
+
+$('#btnLimpiarTodo').addEventListener('click', () => {
+  const empty = state.items.length === 0 && !state.guion.trim() && !state.titulo && !state.cliente;
+  if (empty) return;
+  Modal.open({
+    title: 'Vaciar todo',
+    body: 'Se eliminarán la secuencia, el guion y los datos del proyecto. Las plantillas guardadas no se tocan.',
+    confirmLabel: 'Vaciar',
+    danger: true,
+    onConfirm: () => {
+      state.items = [];
+      state.guion = '';
+      state.titulo = '';
+      state.cliente = '';
+      save(); renderAll();
+      toast('Todo limpiado', '', 'info');
+    }
+  });
+});
+
+$('#btnNueva').addEventListener('click', () => {
+  if (state.items.length === 0) { $('#btnLimpiarTodo').click(); return; }
+  Modal.open({
+    title: 'Nueva secuencia',
+    body: 'Se perderá la secuencia actual si no la guardas como plantilla. Las plantillas guardadas no se tocan.',
+    confirmLabel: 'Empezar nueva',
+    danger: true,
+    onConfirm: () => {
+      state.items = [];
+      state.guion = '';
+      state.titulo = '';
+      state.cliente = '';
+      save(); renderAll();
+      toast('Nueva secuencia', 'Lista para empezar.', 'success');
+    }
+  });
+});
+
+/* Theme toggle */
+(function () {
+  const KEY = 'ae-theme';
+  const saved = localStorage.getItem(KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+  $('#themeToggle').addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem(KEY, next);
+  });
+})();
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function renderAll() {
+  $('#titulo').value = state.titulo || '';
+  $('#cliente').value = state.cliente || '';
+  renderSecuencia();
+  renderGuion();
+  renderPlantillas();
+}
+
+Modal.init();
+load();
+renderFilters();
+renderLib();
+renderAll();
+</script>
+
+</body>
+</html>

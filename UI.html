@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ae Project .studio — UI Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css" />
+</head>
+<body>
+
+<header class="sg-header">
+  <a class="brand" href="#">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Ae Project</span>
+    <span class="brand-tld">.studio</span>
+  </a>
+  <span class="sg-tag">UI Kit · v0.1</span>
+  <div class="sg-spacer"></div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+    <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  </button>
+</header>
+
+<nav class="sg-nav">
+  <a href="#color">01 · Color</a>
+  <a href="#type">02 · Tipografía</a>
+  <a href="#buttons">03 · Botones</a>
+  <a href="#inputs">04 · Inputs</a>
+  <a href="#selection">05 · Selección</a>
+  <a href="#chips">06 · Chips</a>
+  <a href="#tabs">07 · Tabs</a>
+  <a href="#cards">08 · Cards</a>
+  <a href="#alerts">09 · Alertas</a>
+  <a href="#progress">10 · Progreso</a>
+  <a href="#elevation">11 · Elevación</a>
+  <a href="#overlays">12 · Overlays</a>
+</nav>
+
+<main class="sg-main">
+
+  <section class="sg-hero">
+    <h1>UI Kit</h1>
+    <p>Base visual para el taller. Tokens, componentes y patrones reutilizables. Todo responde al tema claro/oscuro desde el conmutador de arriba.</p>
+  </section>
+
+  <!-- 01 · COLOR -->
+  <section class="sg-section" id="color">
+    <div class="sg-head">
+      <span class="sg-num">01</span>
+      <h2>Color</h2>
+      <p class="sg-desc">Marca, semántica y superficies. Los tonos neutros se invierten según el tema.</p>
+    </div>
+    <div class="sg-canvas">
+      <div class="label sg-inline-label">Marca</div>
+      <div class="swatches">
+        <div class="swatch-item"><div class="swatch" style="background:var(--brand)"></div><div class="swatch-name">Brand</div><div class="swatch-value">#FE0557</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--brand-hover)"></div><div class="swatch-name">Hover</div><div class="swatch-value">#E00450</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--brand-active)"></div><div class="swatch-name">Active</div><div class="swatch-value">#C60346</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--brand-subtle); border-color:transparent"></div><div class="swatch-name">Subtle</div><div class="swatch-value">8% alpha</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:#ffffff"></div><div class="swatch-name">White</div><div class="swatch-value">#FFFFFF</div></div>
+      </div>
+
+      <div class="label sg-inline-label">Semántica</div>
+      <div class="swatches">
+        <div class="swatch-item"><div class="swatch" style="background:var(--success)"></div><div class="swatch-name">Success</div><div class="swatch-value">—</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--warning)"></div><div class="swatch-name">Warning</div><div class="swatch-value">—</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--danger)"></div><div class="swatch-name">Danger</div><div class="swatch-value">—</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--info)"></div><div class="swatch-name">Info</div><div class="swatch-value">—</div></div>
+      </div>
+
+      <div class="label sg-inline-label">Superficies</div>
+      <div class="swatches">
+        <div class="swatch-item"><div class="swatch" style="background:var(--bg)"></div><div class="swatch-name">Background</div><div class="swatch-value">--bg</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--surface)"></div><div class="swatch-name">Surface</div><div class="swatch-value">--surface</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--surface-2)"></div><div class="swatch-name">Surface 2</div><div class="swatch-value">--surface-2</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--surface-3)"></div><div class="swatch-name">Surface 3</div><div class="swatch-value">--surface-3</div></div>
+        <div class="swatch-item"><div class="swatch" style="background:var(--border)"></div><div class="swatch-name">Border</div><div class="swatch-value">--border</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · TIPOGRAFÍA -->
+  <section class="sg-section" id="type">
+    <div class="sg-head">
+      <span class="sg-num">02</span>
+      <h2>Tipografía</h2>
+      <p class="sg-desc">Inter para texto general, JetBrains Mono para etiquetas técnicas y números.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">H1 · 34 / 600</span>
+        <h1>Ae Project Studio</h1>
+      </div>
+      <div>
+        <span class="label">H2 · 22 / 600</span>
+        <h2>Diseño, contenido y dirección visual</h2>
+      </div>
+      <div>
+        <span class="label">H3 · 16 / 600</span>
+        <h3>Guion de tomas para reels</h3>
+      </div>
+      <div>
+        <span class="label">Body · 14 / 400</span>
+        <p>Un sistema de diseño personal es una herramienta, no un fin. Sirve para que cada proyecto arranque desde una base sólida, sin reinventar cada vez lo básico.</p>
+      </div>
+      <div>
+        <span class="label">Muted · 13 / 400</span>
+        <p class="muted">Texto secundario para descripciones, notas y metadatos de una interfaz.</p>
+      </div>
+      <div>
+        <span class="label">Label · 11 / 500 · tracking 0.08em</span>
+        <div class="label">SECCIÓN DE CONTENIDO</div>
+      </div>
+      <div>
+        <span class="label">Mono · 12</span>
+        <div class="mono">#FE0557 · 2026-03-18 · 12 ítems · $330.00</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · BOTONES -->
+  <section class="sg-section" id="buttons">
+    <div class="sg-head">
+      <span class="sg-num">03</span>
+      <h2>Botones</h2>
+      <p class="sg-desc">Variantes, tamaños y estados.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">Variantes</span>
+        <div class="sg-row" style="margin-top:10px">
+          <button class="btn btn-primary">Guardar</button>
+          <button class="btn btn-secondary">Cancelar</button>
+          <button class="btn btn-ghost">Ver más</button>
+          <button class="btn btn-danger">Eliminar</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Con icono</span>
+        <div class="sg-row" style="margin-top:10px">
+          <button class="btn btn-primary">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Confirmar
+          </button>
+          <button class="btn btn-secondary">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Añadir
+          </button>
+          <button class="btn btn-ghost">
+            Exportar
+            <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn btn-secondary btn-icon" aria-label="Buscar">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Tamaños</span>
+        <div class="sg-row" style="margin-top:10px">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Default</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Estados</span>
+        <div class="sg-row" style="margin-top:10px">
+          <button class="btn btn-primary">Normal</button>
+          <button class="btn btn-primary" disabled>Deshabilitado</button>
+          <button class="btn btn-secondary" disabled>Deshabilitado</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Con loader</span>
+        <div class="sg-row" style="margin-top:10px">
+          <button class="btn btn-primary"><span class="spinner sm white"></span> Guardando…</button>
+          <button class="btn btn-secondary"><span class="spinner sm"></span> Cargando</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · INPUTS -->
+  <section class="sg-section" id="inputs">
+    <div class="sg-head">
+      <span class="sg-num">04</span>
+      <h2>Inputs y campos</h2>
+      <p class="sg-desc">Textos, áreas, selects, búsqueda y estados de error.</p>
+    </div>
+    <div class="sg-canvas sg-grid-2">
+      <div class="field">
+        <label class="field-label">Nombre del cliente</label>
+        <input class="input" placeholder="Ej. Estudio Norte" />
+        <span class="field-hint">Nombre o razón social para la cotización.</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Email</label>
+        <input class="input" type="email" placeholder="hola@estudio.com" />
+      </div>
+
+      <div class="field">
+        <label class="field-label">Proyecto</label>
+        <input class="input error" value="Sin título" />
+        <span class="field-error">Este campo es obligatorio.</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Tipo de servicio</label>
+        <select class="select">
+          <option>Branding</option>
+          <option>Contenido mensual</option>
+          <option>Edición</option>
+          <option>Impresión</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Buscar</label>
+        <div class="input-wrap">
+          <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input class="input with-icon" placeholder="Buscar cliente, proyecto…" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Presupuesto</label>
+        <div class="input-wrap">
+          <input class="input" value="330.00" />
+          <span class="input-suffix">USD</span>
+        </div>
+      </div>
+
+      <div class="field" style="grid-column:1 / -1">
+        <label class="field-label">Notas / condiciones</label>
+        <textarea class="textarea" placeholder="Anticipo 50%. 2 rondas de cambios incluidas. Entrega en 5 días hábiles."></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Deshabilitado</label>
+        <input class="input" value="No editable" disabled />
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · SELECCIÓN -->
+  <section class="sg-section" id="selection">
+    <div class="sg-head">
+      <span class="sg-num">05</span>
+      <h2>Selección</h2>
+      <p class="sg-desc">Checkboxes, radios, switches, sliders y checklist.</p>
+    </div>
+    <div class="sg-canvas sg-grid-2">
+      <div>
+        <span class="label">Checkboxes</span>
+        <div class="sg-stack" style="margin-top:10px">
+          <label class="checkbox"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Con subtítulos animados</span></label>
+          <label class="checkbox"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Corrección de color</span></label>
+          <label class="checkbox"><input type="checkbox" checked disabled><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Opción bloqueada</span></label>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Radios</span>
+        <div class="sg-stack" style="margin-top:10px">
+          <label class="radio"><input type="radio" name="plan" checked><span class="dot"></span><span>Plan Esencial</span></label>
+          <label class="radio"><input type="radio" name="plan"><span class="dot"></span><span>Plan Pro</span></label>
+          <label class="radio"><input type="radio" name="plan"><span class="dot"></span><span>Plan Premium</span></label>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Switches</span>
+        <div class="sg-stack" style="margin-top:10px">
+          <label class="switch"><input type="checkbox" checked><span class="track"><span class="thumb"></span></span><span>Notificaciones</span></label>
+          <label class="switch"><input type="checkbox"><span class="track"><span class="thumb"></span></span><span>Modo compacto</span></label>
+          <label class="switch"><input type="checkbox" checked disabled><span class="track"><span class="thumb"></span></span><span>Bloqueado</span></label>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Sliders</span>
+        <div class="sg-stack" style="margin-top:10px">
+          <div>
+            <div class="sg-row" style="justify-content:space-between; margin-bottom:6px">
+              <span style="font-size:12.5px">Volumen</span>
+              <span class="mono" style="color:var(--text-muted)">65%</span>
+            </div>
+            <input class="slider" type="range" min="0" max="100" value="65" />
+          </div>
+          <div>
+            <div class="sg-row" style="justify-content:space-between; margin-bottom:6px">
+              <span style="font-size:12.5px">Duración estimada</span>
+              <span class="mono" style="color:var(--text-muted)">30 s</span>
+            </div>
+            <input class="slider" type="range" min="0" max="120" value="30" />
+          </div>
+        </div>
+      </div>
+
+      <div style="grid-column:1 / -1">
+        <span class="label">Checklist</span>
+        <div class="card" style="margin-top:10px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Checklist de rodaje</div>
+              <div class="card-desc">Antes de salir a grabar en sitio.</div>
+            </div>
+            <span class="badge subtle">3 / 5</span>
+          </div>
+          <div class="task-list">
+            <label class="checkbox done"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Baterías cargadas</span></label>
+            <label class="checkbox done"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Tarjetas formateadas</span></label>
+            <label class="checkbox done"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Micrófono de solapa</span></label>
+            <label class="checkbox"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Luces y difusores</span></label>
+            <label class="checkbox"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span>Guion de tomas impreso</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · CHIPS, BADGES, AVATARES -->
+  <section class="sg-section" id="chips">
+    <div class="sg-head">
+      <span class="sg-num">06</span>
+      <h2>Chips, badges y avatares</h2>
+      <p class="sg-desc">Etiquetas pequeñas y elementos de identidad.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">Chips</span>
+        <div class="sg-row" style="margin-top:10px">
+          <span class="chip">Branding</span>
+          <span class="chip brand">Etiqueta de marca</span>
+          <span class="chip">Edición <span class="x">×</span></span>
+          <span class="chip">Cenital <span class="x">×</span></span>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Badges</span>
+        <div class="sg-row" style="margin-top:10px">
+          <span class="badge">Default</span>
+          <span class="badge brand">Nuevo</span>
+          <span class="badge subtle">Pro</span>
+          <span class="badge success">Activo</span>
+          <span class="badge warning">Pendiente</span>
+          <span class="badge danger">Vencido</span>
+          <span class="badge info">Beta</span>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Avatares</span>
+        <div class="sg-row" style="margin-top:10px">
+          <span class="avatar sm">AE</span>
+          <span class="avatar">AE</span>
+          <span class="avatar brand">AE</span>
+          <span class="avatar lg">AE</span>
+          <div class="avatar-group">
+            <span class="avatar sm">JD</span>
+            <span class="avatar sm">MR</span>
+            <span class="avatar sm">LP</span>
+            <span class="avatar sm">+3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · TABS -->
+  <section class="sg-section" id="tabs">
+    <div class="sg-head">
+      <span class="sg-num">07</span>
+      <h2>Tabs</h2>
+      <p class="sg-desc">Segmentado y subrayado.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">Segmentado</span>
+        <div class="tabs" style="margin-top:10px">
+          <button class="tab active">Todas</button>
+          <button class="tab">Ideas</button>
+          <button class="tab">Grabando</button>
+          <button class="tab">Publicadas</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Subrayado</span>
+        <div class="tabs-underline" style="margin-top:10px">
+          <button class="tab active">Resumen</button>
+          <button class="tab">Tomas</button>
+          <button class="tab">Notas</button>
+          <button class="tab">Archivos</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · CARDS -->
+  <section class="sg-section" id="cards">
+    <div class="sg-head">
+      <span class="sg-num">08</span>
+      <h2>Cards</h2>
+      <p class="sg-desc">Planas, con hover, elevadas y con cabecera y pie.</p>
+    </div>
+    <div class="sg-canvas">
+      <div class="sg-grid-3">
+        <div class="card">
+          <div class="card-title">Card simple</div>
+          <div class="card-desc">Contenedor base con borde sutil. Ideal para bloques de contenido neutros.</div>
+        </div>
+
+        <div class="card card-interactive">
+          <div class="card-title">Card interactiva</div>
+          <div class="card-desc">Se eleva al pasar el cursor. Para elementos seleccionables.</div>
+        </div>
+
+        <div class="card card-elevated">
+          <div class="card-title">Card elevada</div>
+          <div class="card-desc">Sin borde, con sombra media. Para destacar contenido importante.</div>
+        </div>
+
+        <div class="card" style="grid-column: span 2">
+          <div class="card-head">
+            <span class="avatar brand">AE</span>
+            <div style="flex:1">
+              <div class="card-title">Guion de tomas · Reel tutorial</div>
+              <div class="card-desc">12 tomas · 00:47 estimado</div>
+            </div>
+            <span class="badge subtle">Borrador</span>
+          </div>
+          <div class="card-desc">Secuencia armada con tomas de la biblioteca: cenital, primer plano, inserto, zoom in y zoom out.</div>
+          <div class="card-foot">
+            <button class="btn btn-primary btn-sm">Abrir</button>
+            <button class="btn btn-ghost btn-sm">Duplicar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · ALERTAS Y NOTIFICACIONES -->
+  <section class="sg-section" id="alerts">
+    <div class="sg-head">
+      <span class="sg-num">09</span>
+      <h2>Alertas y notificaciones</h2>
+      <p class="sg-desc">Mensajes inline y toasts flotantes.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">Alertas</span>
+        <div class="sg-stack" style="margin-top:10px">
+          <div class="alert alert-info">
+            <svg class="icon alert-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div>
+              <div class="alert-title">Nueva versión disponible</div>
+              <div class="alert-body">Se añadieron las plantillas de propuestas al módulo de cotización.</div>
+            </div>
+          </div>
+
+          <div class="alert alert-success">
+            <svg class="icon alert-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div>
+              <div class="alert-title">Cotización guardada</div>
+              <div class="alert-body">Puedes abrirla desde la lista de guardadas cuando quieras.</div>
+            </div>
+          </div>
+
+          <div class="alert alert-warning">
+            <svg class="icon alert-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+            <div>
+              <div class="alert-title">Faltan datos</div>
+              <div class="alert-body">Añade al menos un ítem antes de generar el PDF.</div>
+            </div>
+          </div>
+
+          <div class="alert alert-danger">
+            <svg class="icon alert-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+            <div>
+              <div class="alert-title">No se pudo exportar</div>
+              <div class="alert-body">Revisa que el navegador tenga permisos de descarga.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Toasts / notificaciones</span>
+        <div class="sg-stack" style="margin-top:10px; align-items:flex-start">
+          <div class="toast brand">
+            <svg class="icon toast-icon" viewBox="0 0 24 24"><path d="M12 2v6l4 2"/><path d="M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0z"/></svg>
+            <div style="flex:1">
+              <div class="toast-title">Cotización actualizada</div>
+              <div class="toast-desc">Se aplicó un descuento del 10% al total.</div>
+            </div>
+            <button class="toast-close"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+          </div>
+
+          <div class="toast success">
+            <svg class="icon toast-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div style="flex:1">
+              <div class="toast-title">Exportado correctamente</div>
+              <div class="toast-desc">Archivo <span class="mono">guion-reel.json</span> listo.</div>
+            </div>
+            <button class="toast-close"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+          </div>
+
+          <div class="toast">
+            <svg class="icon toast-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div style="flex:1">
+              <div class="toast-title">Recordatorio</div>
+              <div class="toast-desc">Publicación programada para hoy a las 18:00.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · PROGRESO Y CARGA -->
+  <section class="sg-section" id="progress">
+    <div class="sg-head">
+      <span class="sg-num">10</span>
+      <h2>Progreso y carga</h2>
+      <p class="sg-desc">Barras lineales, anillos, spinners y skeletons.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">Progress bar</span>
+        <div class="sg-stack" style="margin-top:10px">
+          <div>
+            <div class="sg-row" style="justify-content:space-between; margin-bottom:8px">
+              <span style="font-size:12.5px">Render en curso</span>
+              <span class="mono" style="color:var(--text-muted)">45%</span>
+            </div>
+            <div class="progress"><div class="bar" style="width:45%"></div></div>
+          </div>
+          <div>
+            <div class="sg-row" style="justify-content:space-between; margin-bottom:8px">
+              <span style="font-size:12.5px">Subiendo archivos</span>
+              <span class="mono" style="color:var(--text-muted)">82%</span>
+            </div>
+            <div class="progress thick"><div class="bar" style="width:82%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Progress ring</span>
+        <div class="sg-row" style="margin-top:10px; gap:24px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <svg class="progress-ring sm" viewBox="0 0 36 36" style="--p:35">
+              <circle class="ring-bg" cx="18" cy="18" r="15"/>
+              <circle class="ring-fg" cx="18" cy="18" r="15"/>
+            </svg>
+            <span class="mono" style="color:var(--text-subtle)">35%</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <svg class="progress-ring" viewBox="0 0 36 36" style="--p:65">
+              <circle class="ring-bg" cx="18" cy="18" r="15"/>
+              <circle class="ring-fg" cx="18" cy="18" r="15"/>
+            </svg>
+            <span class="mono" style="color:var(--text-subtle)">65%</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <svg class="progress-ring lg" viewBox="0 0 36 36" style="--p:90">
+              <circle class="ring-bg" cx="18" cy="18" r="15"/>
+              <circle class="ring-fg" cx="18" cy="18" r="15"/>
+            </svg>
+            <span class="mono" style="color:var(--text-subtle)">90%</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Spinners</span>
+        <div class="sg-row" style="margin-top:10px; gap:20px">
+          <span class="spinner sm"></span>
+          <span class="spinner"></span>
+          <span class="spinner lg"></span>
+          <span class="spinner muted"></span>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Skeleton</span>
+        <div class="sg-grid-2" style="margin-top:10px">
+          <div class="card">
+            <div class="sg-row" style="gap:12px">
+              <div class="skeleton circle"></div>
+              <div style="flex:1">
+                <div class="skeleton title"></div>
+                <div class="skeleton text" style="width:70%"></div>
+              </div>
+            </div>
+            <div class="skeleton block" style="margin-top:16px"></div>
+            <div class="skeleton text" style="margin-top:12px"></div>
+            <div class="skeleton text" style="width:60%"></div>
+          </div>
+          <div class="card">
+            <div class="skeleton title"></div>
+            <div class="skeleton text"></div>
+            <div class="skeleton text" style="width:80%"></div>
+            <div class="skeleton text" style="width:40%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · ELEVACIÓN -->
+  <section class="sg-section" id="elevation">
+    <div class="sg-head">
+      <span class="sg-num">11</span>
+      <h2>Elevación</h2>
+      <p class="sg-desc">Cinco niveles de sombra. Se adaptan al tema automáticamente.</p>
+    </div>
+    <div class="sg-canvas">
+      <div class="sg-grid-3" style="grid-template-columns: repeat(5, 1fr)">
+        <div class="elev-box" style="box-shadow:var(--shadow-xs)">xs</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-sm)">sm</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-md)">md</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-lg)">lg</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-xl)">xl</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · OVERLAYS Y OTROS -->
+  <section class="sg-section" id="overlays">
+    <div class="sg-head">
+      <span class="sg-num">12</span>
+      <h2>Overlays y otros</h2>
+      <p class="sg-desc">Tooltips, breadcrumbs, divider, tabla y modal.</p>
+    </div>
+    <div class="sg-canvas sg-stack">
+      <div>
+        <span class="label">Tooltip</span>
+        <div class="sg-row" style="margin-top:14px">
+          <span class="tooltip" data-tip="Se copió al portapapeles">
+            <button class="btn btn-secondary">Pasa el cursor</button>
+          </span>
+          <span class="tooltip" data-tip="Añadir toma a la secuencia">
+            <button class="btn btn-primary btn-icon">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Breadcrumb</span>
+        <nav class="breadcrumb" style="margin-top:10px">
+          <a href="#">Taller</a>
+          <span class="sep">/</span>
+          <a href="#">Tarifario</a>
+          <span class="sep">/</span>
+          <span class="current">Cotización · Estudio Norte</span>
+        </nav>
+      </div>
+
+      <div>
+        <span class="label">Divider</span>
+        <hr class="divider" />
+      </div>
+
+      <div>
+        <span class="label">Tabla</span>
+        <div class="card" style="padding:6px 0; margin-top:10px">
+          <table class="table">
+            <thead>
+              <tr><th>Servicio</th><th>Cantidad</th><th>Precio</th><th style="text-align:right">Subtotal</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Reel Pro</td><td>6</td><td>$20.00</td><td class="mono" style="text-align:right">$120.00</td></tr>
+              <tr><td>Post estático</td><td>10</td><td>$5.00</td><td class="mono" style="text-align:right">$50.00</td></tr>
+              <tr><td>Sesión de grabación</td><td>8 h</td><td>$10.00</td><td class="mono" style="text-align:right">$80.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <span class="label">Modal</span>
+        <div class="sg-row" style="margin-top:10px">
+          <button class="btn btn-primary" onclick="document.getElementById('demoModal').classList.add('on')">Abrir modal</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal demo -->
+<div class="modal" id="demoModal">
+  <div class="modal-backdrop" onclick="document.getElementById('demoModal').classList.remove('on')"></div>
+  <div class="modal-panel">
+    <div class="card-head">
+      <div style="flex:1">
+        <div class="card-title" style="font-size:16px">Confirmar acción</div>
+        <div class="card-desc">Esta acción reemplazará la cotización actual. ¿Deseas continuar?</div>
+      </div>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="document.getElementById('demoModal').classList.remove('on')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sg-row" style="justify-content:flex-end; margin-top:20px">
+      <button class="btn btn-ghost" onclick="document.getElementById('demoModal').classList.remove('on')">Cancelar</button>
+      <button class="btn btn-primary" onclick="document.getElementById('demoModal').classList.remove('on')">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Theme: persistencia + preferencia del sistema */
+(function () {
+  const KEY = 'ae-theme';
+  const saved = localStorage.getItem(KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', initial);
+
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem(KEY, next);
+  });
+})();
+
+/* Demo: tabs y slider (solo para la página del kit) */
+document.querySelectorAll('.tabs, .tabs-underline').forEach(group => {
+  group.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      group.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+});
+</script>
+
+</body>
+</html>
