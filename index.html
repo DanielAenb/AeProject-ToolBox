@@ -445,6 +445,10 @@
 </main>
 
 <script src="assets/utils.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/cloud.js"></script>
+<script src="assets/guion-data.js"></script>
+<script src="assets/guion.js"></script>
 <script>
 /* ============================================================
    HERRAMIENTAS
@@ -482,12 +486,6 @@ const TOOLS = [
 { id:"guion", cat:"Producción", nombre:"Guion",
   desc:"Guion, tomas, transiciones y hooks en un solo lugar. Cobertura visual del texto, asignación de tomas por sección.",
   icon:"camera", status:"ready", href:"guion.html" },
-  { id:"guion-tomas", cat:"Producción", nombre:"Guion de tomas",
-    desc:"Biblioteca de tomas, secuencia arrastrable, marcadores, transiciones y guion con copia rápida.",
-    icon:"camera", status:"ready", href:"guion-tomas.html" },
-  { id:"hooks", cat:"Producción", nombre:"Biblioteca de hooks",
-    desc:"Frases de apertura por tipo: curiosidad, controversia, historia, error común.",
-    icon:"zap", status:"ready", href:"hooks.html" },
   { id:"moodboard", cat:"Producción", nombre:"Moodboard y paletas",
     desc:"Sube referencias, extrae paleta dominante y exporta hoja de estilo.",
     icon:"palette", status:"soon" },
@@ -543,8 +541,8 @@ const TOOLS = [
     desc:"Lo que haces, para quién, cómo trabajas y cuánto cuesta. Enlaza al tarifario.",
     icon:"briefcase", status:"soon" },
   { id:"preview-redes", cat:"Portafolio", nombre:"Vista previa de redes",
-    desc:"Mockup de feed con tus posts en grid estilo Instagram.",
-    icon:"monitor", status:"soon" },
+    desc:"Mockup de feed para Instagram, TikTok y Facebook con tus piezas reales.",
+    icon:"monitor", status:"ready", href:"preview.html" },
 ];
 
 /* ============================================================
