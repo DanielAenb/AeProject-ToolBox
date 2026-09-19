@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guion · Ae Project .studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/guion.css" />
+</head>
+
+<body>
+
+<header class="app-header">
+  <a href="index.html" class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Ae Project</span>
+    <span class="brand-tld">.studio</span>
+  </a>
+
+  <nav class="tabs-nav" role="tablist">
+    <button class="tab-btn active" data-tab="guion" role="tab">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="tab-label">Guion</span>
+    </button>
+    <button class="tab-btn" data-tab="tomas" role="tab">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      <span class="tab-label">Tomas</span>
+      <span class="tab-badge" data-badge="tomas" hidden>0</span>
+    </button>
+    <button class="tab-btn" data-tab="transiciones" role="tab">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      <span class="tab-label">Transiciones</span>
+    </button>
+    <button class="tab-btn" data-tab="hooks" role="tab">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span class="tab-label">Hooks</span>
+      <span class="tab-badge" data-badge="hooks" hidden>0</span>
+    </button>
+  </nav>
+
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <button class="btn btn-ghost btn-sm" id="btnNuevo" title="Nuevo video">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="label-hide">Nuevo</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnGuardar" title="Guardar">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span class="label-hide">Guardar</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnExportar" title="Exportar JSON">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <span class="label-hide">Exportar</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnImportar" title="Importar JSON">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
+      <span class="label-hide">Importar</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnCopiar" title="Copiar guion">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span class="label-hide">Copiar</span>
+    </button>
+    <button class="btn btn-primary btn-sm" id="btnPlay" title="Reproducir secuencia">
+      <svg class="icon icon-sm" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 3 20 12 6 21"/></svg>
+      Play
+    </button>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="guion-main">
+
+  <!-- TAB 1 · GUION -->
+  <section class="tab-panel active" data-panel="guion">
+    <div class="panel-grid">
+      <div class="panel-col">
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Configuración</span>
+          </div>
+          <div class="section-body">
+            <div class="config-grid">
+              <div class="field full">
+                <label class="field-label">Título del video</label>
+                <input class="input" id="titulo" placeholder="Ej. Cómo organizo mi contenido semanal" />
+              </div>
+              <div class="field">
+                <label class="field-label">Cliente / proyecto</label>
+                <input class="input" id="cliente" placeholder="Opcional" />
+              </div>
+              <div class="field">
+                <label class="field-label">Duración objetivo</label>
+                <div class="chips-row" id="durChips"></div>
+              </div>
+              <div class="field full">
+                <label class="field-label">Plantilla</label>
+                <div class="tpl-picker" id="tplPicker"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Guion</span>
+            <div class="spacer"></div>
+            <span class="sh-count" id="secCounter"></span>
+          </div>
+          <div class="script-list" id="scriptList"></div>
+          <div class="progress-block">
+            <div class="progress-head">
+              <span class="p-label">Progreso</span>
+              <span class="p-value" id="progressValue">0 / 0 palabras</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progressFill" style="width:0"></div>
+            </div>
+            <div class="progress-legend">
+              <span id="progressTime">0s</span>
+              <span id="progressTarget">Objetivo: 30s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel-side">
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Hooks rápidos</span>
+            <div class="spacer"></div>
+            <button class="btn btn-ghost btn-sm" id="btnOpenHooks">Ver todos</button>
+          </div>
+          <div class="section-body" id="quickHooks"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Cobertura de tomas</span>
+          </div>
+          <div class="section-body" id="coverageList"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TAB 2 · TOMAS -->
+  <section class="tab-panel" data-panel="tomas" hidden>
+    <div class="panel-grid tomas-grid">
+      <aside class="panel-side-left">
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Biblioteca</span>
+            <div class="spacer"></div>
+            <span class="sh-count" id="libCount">0</span>
+          </div>
+          <div class="lib-toolbar">
+            <div class="input-wrap">
+              <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input class="input with-icon" id="libSearch" placeholder="Buscar toma…" />
+            </div>
+            <div class="chips-row" id="libFilters"></div>
+          </div>
+          <div class="lib-grid" id="libGrid"></div>
+        </div>
+      </aside>
+
+      <div class="panel-col">
+        <!-- Panel de guion de referencia -->
+        <div class="section" style="margin-bottom:16px">
+          <div class="guion-ref" id="guionRef">
+            <div class="guion-ref-head" data-guion-toggle>
+              <span class="gr-title">Guion de referencia</span>
+              <span class="gr-info" id="guionRefInfo"></span>
+              <span class="gr-toggle">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="guion-ref-body">
+              <div class="guion-ref-grid" id="guionRefGrid"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="seq-summary">
+            <div class="stat">
+              <span class="v" id="statTomas">0</span>
+              <span class="k">tomas</span>
+            </div>
+            <div class="stat">
+              <span class="v" id="statDuracion">0s</span>
+              <span class="k">duración</span>
+            </div>
+            <span class="badge badge-dur" id="badgeDur">—</span>
+            <div class="spacer" style="flex:1"></div>
+            <button class="btn btn-secondary btn-sm" id="btnAutoAssign" title="Sugerir asignación">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+              Sugerir asignación
+            </button>
+          </div>
+          <div class="section-body">
+            <div class="seq-strip" id="seqStrip"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3 · TRANSICIONES -->
+  <section class="tab-panel" data-panel="transiciones" hidden>
+    <div class="panel-grid">
+      <div class="panel-col">
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Ritmo del video</span>
+            <div class="spacer"></div>
+            <span class="sh-count" id="transAppliedCount">0 transiciones</span>
+          </div>
+          <div class="section-body">
+            <div class="trans-chain" id="transChain"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Catálogo</span>
+            <div class="spacer"></div>
+            <button class="btn btn-secondary btn-sm" id="btnNewTrans">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              Nueva transición
+            </button>
+          </div>
+          <div class="section-body">
+            <div class="trans-grid-catalog" id="transCatalog"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4 · HOOKS -->
+  <section class="tab-panel" data-panel="hooks" hidden>
+    <div class="panel-grid">
+      <div class="panel-col">
+        <div class="section">
+          <div class="lib-toolbar">
+            <div class="search" style="flex:1 1 200px">
+              <div class="input-wrap">
+                <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input class="input with-icon" id="hookSearch" placeholder="Buscar hook…" />
+              </div>
+            </div>
+            <div class="chips-row" id="hookFilters"></div>
+            <button class="btn btn-primary btn-sm" id="btnNewHook">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              Nuevo
+            </button>
+          </div>
+          <div class="hooks-grid" id="hooksGrid"></div>
+        </div>
+      </div>
+
+      <aside class="panel-side">
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Resumen</span>
+          </div>
+          <div class="section-body">
+            <div class="stats-grid">
+              <div class="stat-cell">
+                <span class="v" id="statHooksTotal">0</span>
+                <span class="k">Hooks</span>
+              </div>
+              <div class="stat-cell warn">
+                <span class="v" id="statHooksFav">0</span>
+                <span class="k">Favoritos</span>
+              </div>
+              <div class="stat-cell brand">
+                <span class="v" id="statHooksUsed">0</span>
+                <span class="k">Usados</span>
+              </div>
+              <div class="stat-cell">
+                <span class="v" id="statHooksCats">0</span>
+                <span class="k">Categorías</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <span class="sh-title">Categorías</span>
+          </div>
+          <div class="section-body">
+            <div class="cat-list" id="hookCatList"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ MODALES -->
+
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="confirmTitle">Confirmar</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-danger" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="saveModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="saveTitle">Guardar</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="saveDesc">Ponle un nombre para identificarlo después.</p>
+    <div class="modal-input">
+      <input class="input" id="saveName" placeholder="Nombre…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="saveConfirm">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="transPicker" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel trans-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Elegir transición</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Cómo entra esta toma respecto a la anterior.</p>
+    <div class="trans-grid" id="transGrid"></div>
+  </div>
+</div>
+
+<div class="modal" id="assignModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel assign-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="assignTitle">Asignar tomas</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="assignDesc">Elige las tomas que cubren esta sección.</p>
+    <div class="assign-list" id="assignList"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="assignConfirm">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="hookEditModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel edit-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="hookEditTitle">Nuevo hook</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Escribe el hook. Puedes usar variables entre corchetes.</p>
+    <div class="edit-form">
+      <div class="field">
+        <label class="field-label">Texto del hook</label>
+        <textarea class="edit-textarea" id="hookEditText" placeholder="Ej. El error que comete el 90% de las marcas con [tema]…"></textarea>
+        <div class="edit-hint">
+          Variables sugeridas: <code>[tema]</code> <code>[producto]</code> <code>[cliente]</code> <code>[número]</code>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Categoría</label>
+        <div class="chips-row" id="hookCatPicker"></div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="hookEditFav" />
+        <span class="track"><span class="thumb"></span></span>
+        <span>Marcar como favorito</span>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="hookEditSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="hookUseModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel use-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Insertar hook</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="hookUseDesc">Rellena las variables y el hook se inserta en la sección Hook.</p>
+    <div class="var-fields" id="varFields"></div>
+    <div class="var-preview" id="varPreview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="hookUseConfirm">Insertar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal editar transición -->
+<div class="modal" id="transEditModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="transEditTitle">Nueva transición</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Añade una transición que no esté en el catálogo.</p>
+    <div class="edit-form">
+      <div class="field">
+        <label class="field-label">Nombre</label>
+        <input class="input" id="transEditName" placeholder="Ej. Match cut lateral" />
+      </div>
+      <div class="field">
+        <label class="field-label">Cuándo usarla</label>
+        <textarea class="edit-textarea" id="transEditDesc" placeholder="Ej. Cuando dos tomas comparten movimiento…" style="min-height:64px"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Video de ejemplo (opcional)</label>
+        <input class="input" id="transEditVideo" placeholder="clips/xyz.mp4 o https://www.youtube.com/embed/ID" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="transEditSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal overlay (B-roll) -->
+<div class="modal" id="overlayModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel assign-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Añadir B-roll sobre esta toma</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Elige qué toma quieres superponer visualmente mientras se mantiene el audio de la toma principal.</p>
+    <div class="assign-list" id="overlayList"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-ghost" id="overlayClear" style="color:var(--danger)">Quitar overlay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer hooks -->
+<aside class="drawer" id="hooksDrawer" hidden>
+  <div class="drawer-backdrop" data-drawer-close></div>
+  <div class="drawer-panel">
+    <div class="drawer-head">
+      <span class="sh-title">Insertar hook</span>
+      <button class="btn-icon btn btn-ghost btn-sm" data-drawer-close>
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="drawer-toolbar">
+      <div class="input-wrap">
+        <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="input with-icon" id="drawerSearch" placeholder="Buscar hook…" />
+      </div>
+      <div class="chips-row" id="drawerFilters"></div>
+    </div>
+    <div class="drawer-list" id="drawerList"></div>
+  </div>
+</aside>
+
+<!-- Play -->
+<div id="play">
+  <div class="play-top">
+    <span class="play-title" id="playTitle">—</span>
+    <span class="play-counter" id="playCounter">0 / 0</span>
+    <div class="spacer"></div>
+    <button id="btnClosePlay">Salir (Esc)</button>
+  </div>
+  <div class="play-stage">
+    <div class="play-screen" id="playScreen"></div>
+    <div class="play-info">
+      <span class="play-marcador" id="playMarcador" hidden></span>
+      <div class="play-name" id="playName">—</div>
+      <div class="play-nota" id="playNota"></div>
+      <div class="play-section" id="playSection" hidden></div>
+    </div>
+  </div>
+  <div class="play-progress"><div class="bar" id="playBar" style="width:0"></div></div>
+  <div class="play-controls">
+    <button id="btnPrev">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Anterior
+    </button>
+    <button id="btnNext">
+      Siguiente
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+  <div class="play-hint">← → navegar · Esc salir · Inicio/Fin saltar</div>
+</div>
+
+<div class="toast-host" id="toastHost"></div>
+
+<script src="assets/utils.js"></script>
+<script src="assets/guion-data.js"></script>
+<script src="assets/guion.js"></script>
+
+</body>
+</html>
