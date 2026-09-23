@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moodboard · Ae Project .studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/moodboard.css" />
+</head>
+
+<body>
+
+<header class="app-header">
+  <a href="index.html" class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Ae Project</span>
+    <span class="brand-tld">.studio</span>
+  </a>
+  <span class="tool-name">Moodboard</span>
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <button class="btn btn-ghost btn-sm" id="btnExportCSS" title="Exportar CSS">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span class="label-hide">CSS</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnExportJSON" title="Exportar JSON">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <span class="label-hide">JSON</span>
+    </button>
+    <button class="btn btn-primary btn-sm" id="btnExportPNG" title="Exportar PNG">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      PNG
+    </button>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="mb-main">
+
+  <!-- ============ SIDEBAR IZQUIERDA · Biblioteca ============ -->
+  <aside class="mb-side mb-side-left">
+    <div class="section">
+      <div class="section-head">
+        <span class="sh-title">Biblioteca</span>
+        <div class="spacer"></div>
+        <span class="sh-count" id="imgCount">0</span>
+      </div>
+
+      <div class="lib-drop" id="dropZone">
+        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="ld-title">Arrastra imágenes</div>
+        <div class="ld-desc">o</div>
+        <button class="btn btn-secondary btn-sm" id="btnAddImgs2">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Seleccionar
+        </button>
+      </div>
+
+      <div class="lib-list" id="libList"></div>
+
+      <div class="lib-actions">
+        <button class="btn btn-ghost btn-sm" id="btnClearImgs" style="color:var(--danger);width:100%">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          Vaciar biblioteca
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA CENTRAL ============ -->
+  <div class="mb-center">
+
+    <div class="view-tabs">
+      <button class="vt-btn active" data-view="moodboard">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Moodboard
+      </button>
+      <button class="vt-btn" data-view="paleta">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.6-.4-1.1 0-.9.7-1.6 1.6-1.6H16c3 0 5.5-2.5 5.5-5.5C21.5 6 17.5 2 12 2z"/></svg>
+        Paleta
+      </button>
+      <button class="vt-btn" data-view="preview">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        Preview
+      </button>
+      <div class="spacer"></div>
+      <button class="btn-icon" id="btnGridToggle" title="Cambiar columnas del grid">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
+    </div>
+
+    <div class="view-content" id="viewContent"></div>
+
+  </div>
+
+  <!-- ============ SIDEBAR DERECHA · Contraste + Info ============ -->
+  <aside class="mb-side mb-side-right">
+
+    <div class="section">
+      <div class="section-head">
+        <span class="sh-title">Contraste WCAG</span>
+      </div>
+      <div class="section-body" id="contrastPanel">
+        <div class="empty-hint">Asigna roles en la pestaña Paleta.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="sh-title">Info</span>
+      </div>
+      <div class="section-body">
+        <div class="sys-info" id="sysInfo"></div>
+      </div>
+    </div>
+
+  </aside>
+
+</main>
+
+<input type="file" id="fileInput" accept="image/*" multiple hidden />
+<div class="toast-host" id="toastHost"></div>
+
+<script src="assets/utils.js"></script>
+<script src="assets/moodboard.js"></script>
+
+</body>
+</html>
