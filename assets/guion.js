@@ -8,24 +8,38 @@
    ────────────────────────────────────────────────────────────
    Persistencia: localStorage con clave "guion-v1".
    Plan futuro: migrar a Firebase (Firestore). Cuando eso pase,
-   solo cambian las funciones save() y load().
+   solo cambian las funciones save() y load() — todo lo demás
+   sigue intacto.
    ============================================================ */
 const LS_KEY = "guion-v1";
-const HOOKS_LEGACY_KEY = "hooks-v1";
+const HOOKS_LEGACY_KEY = "hooks-v1"; // para migrar hooks viejos
 
 let state = {
   version: 1,
+
+  // Metadata del video
   titulo: "",
   cliente: "",
   duracion: 30,
   plantillaId: "tutorial",
+
+  // Contenido del guion: { seccionId: "texto..." }
   secciones: {},
+
+  // Tomas en secuencia
+  // [{ shotId, nota, duracion, marcador, transicion, grabada, seccionAsignada }]
   tomas: [],
+
+  // Biblioteca de hooks
   hooks: [],
+
+  // Borradores
   drafts: [],
+
+  // Plantillas de guion guardadas (snapshot del contenido)
   templates: [],
-  customTransitions: [],
-  ui: { guionRefOpen: false },
+
+  // UI
   activeTab: "guion",
 };
 
@@ -36,24 +50,18 @@ function load() {
   if (s) {
     state = { ...state, ...s };
   } else {
+    // Primera vez: migrar hooks viejos si existen
     const legacy = store.get(HOOKS_LEGACY_KEY);
     if (legacy && Array.isArray(legacy.hooks) && legacy.hooks.length > 0) {
       state.hooks = legacy.hooks;
     } else {
       state.hooks = JSON.parse(JSON.stringify(HOOKS_DEFAULT));
     }
+    // Inicializar secciones de la plantilla por defecto
     const tpl = plantilla(state.plantillaId);
     tpl.secciones.forEach(s => { state.secciones[s.id] = ""; });
     save();
   }
-  // Defensa: asegurar campos
-  if (!Array.isArray(state.customTransitions)) state.customTransitions = [];
-  if (!state.ui) state.ui = { guionRefOpen: false };
-  if (!Array.isArray(state.tomas)) state.tomas = [];
-  if (!Array.isArray(state.hooks)) state.hooks = [];
-  if (!Array.isArray(state.drafts)) state.drafts = [];
-  if (!state.secciones) state.secciones = {};
-
   // Asegurar que existan las secciones de la plantilla activa
   const tpl = plantilla(state.plantillaId);
   tpl.secciones.forEach(s => {
@@ -63,18 +71,24 @@ function load() {
 
 /* ============================================================
    HELPERS
-   ($, $$, escapeHTML, today vienen de utils.js)
    ============================================================ */
+//const $  = (sel, root = document) => root.querySelector(sel);
+//const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
 const plantilla = id => PLANTILLAS.find(p => p.id === id) || PLANTILLAS[0];
 const shot      = id => SHOTS.find(s => s.id === id);
 const marcador  = id => MARCADORES.find(m => m.id === id);
-const transicion = id => allTransitions().find(t => t.id === id);
+const transicion = id => TRANSICIONES.find(t => t.id === id);
 const catHook   = id => CATEGORIAS_HOOKS.find(c => c.id === id) || { id, label: id };
 
-function allTransitions() {
-  return [...TRANSICIONES, ...(state.customTransitions || [])];
+/*function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
 }
 
+function today() { return new Date().toISOString().slice(0, 10); }
+*/
 function fmtDur(sec) {
   sec = Math.max(0, Math.round(Number(sec) || 0));
   if (sec < 60) return sec + "s";
@@ -177,7 +191,7 @@ function switchTab(tabId) {
     p.classList.toggle("active", active);
     p.hidden = !active;
   });
-  if (tabId === "tomas") { renderSecuencia(); renderGuionRef(); }
+  if (tabId === "tomas") renderSecuencia();
   if (tabId === "transiciones") renderTransiciones();
   if (tabId === "hooks") renderHooks();
   if (tabId === "guion") renderAllGuion();
@@ -186,6 +200,8 @@ function switchTab(tabId) {
 /* ============================================================
    TAB 1 · GUION
    ============================================================ */
+
+/* --- Config --- */
 function renderDurChips() {
   $("#durChips").innerHTML = DURACIONES.map(d => `
     <button class="dur-chip ${state.duracion === d.s ? "active" : ""}" data-dur="${d.s}">
@@ -212,7 +228,7 @@ function renderTplPicker() {
     if (hasContent) {
       openConfirm(
         "Cambiar plantilla",
-        "Las secciones actuales no coinciden con la nueva plantilla. Se conservará el texto de las secciones cuyo id coincida.",
+        "Las secciones actuales no coinciden con la nueva plantilla. Se conservará el texto de las secciones cuyo id coincida (hook, cta, etc.).",
         "Cambiar",
         () => applyTemplateChange(newId)
       );
@@ -225,9 +241,11 @@ function renderTplPicker() {
 function applyTemplateChange(newId) {
   state.plantillaId = newId;
   const tpl = plantilla(newId);
+  // Asegurar que las secciones de la nueva plantilla existan
   tpl.secciones.forEach(s => {
     if (typeof state.secciones[s.id] === "undefined") state.secciones[s.id] = "";
   });
+  // Desasignar tomas cuya sección ya no existe
   const validIds = new Set(tpl.secciones.map(s => s.id));
   state.tomas.forEach(t => {
     if (t.seccionAsignada && !validIds.has(t.seccionAsignada)) t.seccionAsignada = null;
@@ -236,6 +254,7 @@ function applyTemplateChange(newId) {
   toast("Plantilla cambiada", plantilla(newId).nombre, "info");
 }
 
+/* --- Secciones del guion --- */
 function renderScriptList() {
   const tpl = plantilla(state.plantillaId);
   const list = $("#scriptList");
@@ -251,6 +270,7 @@ function renderScriptList() {
     const target = Math.round(state.duracion * PALABRAS_POR_SEGUNDO * (sec.weight || 0));
     const isHook = sec.id === "hook";
 
+    // Tomas asignadas a esta sección
     const tomasAsignadas = state.tomas
       .map((t, i) => ({ ...t, idx: i }))
       .filter(t => t.seccionAsignada === sec.id);
@@ -315,6 +335,7 @@ function renderScriptList() {
     `;
   }).join("");
 
+  // Bindings
   $$("[data-input]").forEach(ta => {
     autoResize(ta);
     ta.addEventListener("input", () => {
@@ -440,62 +461,6 @@ function renderAllGuion() {
 }
 
 /* ============================================================
-   PANEL GUION DE REFERENCIA (tab Tomas)
-   ============================================================ */
-function renderGuionRef() {
-  const tpl = plantilla(state.plantillaId);
-  const totalSec = tpl.secciones.length;
-  const secDone = tpl.secciones.filter(s => (state.secciones[s.id] || "").trim()).length;
-  const totalWords = wordCount(Object.values(state.secciones).join(" "));
-  $("#guionRefInfo").textContent = `${secDone} / ${totalSec} secciones · ${fmtDur(totalWords / PALABRAS_POR_SEGUNDO)}`;
-
-  $("#guionRefGrid").innerHTML = tpl.secciones.map(sec => {
-    const text = (state.secciones[sec.id] || "").trim();
-    const tomaCount = state.tomas.filter(t => t.seccionAsignada === sec.id).length;
-    const isEmpty = !text;
-    return `
-      <div class="gr-sec ${isEmpty ? "empty" : ""}">
-        <div class="grs-head">
-          <span class="grs-label ${sec.id}">${escapeHTML(sec.label)}</span>
-          <span class="grs-count ${tomaCount > 0 ? "has" : ""}">
-            ${tomaCount} ${tomaCount === 1 ? "toma" : "tomas"}
-          </span>
-        </div>
-        <div class="grs-text">
-          ${isEmpty ? "Sin escribir" : escapeHTML(text)}
-        </div>
-        <div class="grs-actions">
-          <button data-jump-to-guion="${sec.id}">Editar →</button>
-          ${tomaCount === 0 ? `<button data-assign-from-ref="${sec.id}">Asignar tomas</button>` : ""}
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  $$("[data-jump-to-guion]").forEach(b => b.addEventListener("click", () => {
-    switchTab("guion");
-    setTimeout(() => {
-      const target = $(`[data-sec="${b.dataset.jumpToGuion}"]`);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-        const ta = target.querySelector("textarea");
-        if (ta) ta.focus();
-      }
-    }, 100);
-  }));
-
-  $$("[data-assign-from-ref]").forEach(b => b.addEventListener("click", () => {
-    openAssignModal(b.dataset.assignFromRef);
-  }));
-}
-
-function toggleGuionRef() {
-  state.ui.guionRefOpen = !state.ui.guionRefOpen;
-  save();
-  $("#guionRef").classList.toggle("open", state.ui.guionRefOpen);
-}
-
-/* ============================================================
    TAB 2 · TOMAS
    ============================================================ */
 let libFilter = "all";
@@ -551,7 +516,6 @@ function addShot(shotId) {
     transicion: prev ? (prev.transicion || "cut") : "",
     grabada: false,
     seccionAsignada: null,
-    overlay: null,
   });
   save(); renderSecuencia(); renderAllGuion();
   updateTabBadges();
@@ -626,18 +590,6 @@ function renderSecuencia() {
     const secAssigned = it.seccionAsignada ? tpl.secciones.find(x => x.id === it.seccionAsignada) : null;
     const secLabel = secAssigned ? secAssigned.label : "Sin sección";
 
-    const ov = it.overlay && it.overlay.shotId ? shot(it.overlay.shotId) : null;
-    const overlayHTML = `
-      <button class="seq-overlay ${ov ? "assigned" : ""}" data-overlay="${i}" title="${ov ? "Cambiar B-roll" : "Añadir B-roll sobre esta toma"}">
-        ${ov
-          ? `<svg class="icon" style="width:11px;height:11px" viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="10" rx="1"/><path d="M17 10l5-3v10l-5-3"/></svg>
-             <span style="overflow:hidden;text-overflow:ellipsis">${escapeHTML(ov.nombre)}</span>
-             <span class="so-x" data-overlay-clear="${i}">×</span>`
-          : `<svg class="icon" style="width:11px;height:11px" viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="10" rx="1"/><path d="M17 10l5-3v10l-5-3"/><path d="M12 5v3M10.5 6.5h3"/></svg>
-             <span>+ B-roll</span>`}
-      </button>
-    `;
-
     const cardHTML = `
       <div class="seq-item ${it.grabada ? "grabada" : ""}" data-i="${i}" draggable="true">
         <div class="seq-top">
@@ -661,8 +613,6 @@ function renderSecuencia() {
           <svg class="icon" style="width:11px;height:11px" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           <span class="sc-name">${escapeHTML(secLabel)}</span>
         </button>
-
-        ${overlayHTML}
 
         <div class="seq-controls">
           <input type="number" class="seq-dur-input" data-dur="${i}" value="${it.duracion}" min="0" step="1" title="Duración (seg)" />
@@ -726,6 +676,7 @@ function renderSecuencia() {
     save();
     const card = inp.closest(".seq-item");
     if (card) card.querySelector(".seq-dur").textContent = fmtDur(v);
+    // Update stats
     const totalDur = state.tomas.reduce((a, t) => a + (Number(t.duracion) || 0), 0);
     $("#statDuracion").textContent = fmtDur(totalDur);
   }));
@@ -744,18 +695,6 @@ function renderSecuencia() {
     });
   });
   $$("[data-section-pick]").forEach(b => b.addEventListener("click", () => openSectionPickerForToma(+b.dataset.sectionPick)));
-
-  // Overlay
-  $$("[data-overlay]").forEach(b => b.addEventListener("click", (e) => {
-    if (e.target.dataset.overlayClear) return;
-    openOverlayModal(+b.dataset.overlay);
-  }));
-  $$("[data-overlay-clear]").forEach(b => b.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const i = +b.dataset.overlayClear;
-    state.tomas[i].overlay = null;
-    save(); renderSecuencia();
-  }));
 
   // Drag & drop
   let dragIndex = null;
@@ -776,54 +715,7 @@ function renderSecuencia() {
       save(); renderSecuencia();
     });
   });
-
-  renderGuionRef();
 }
-
-/* ============================================================
-   OVERLAY (B-roll)
-   ============================================================ */
-let overlayIndex = null;
-
-function openOverlayModal(i) {
-  overlayIndex = i;
-  const current = state.tomas[i].overlay;
-  renderOverlayList(current ? current.shotId : null);
-  $("#overlayModal").classList.add("on");
-}
-
-function renderOverlayList(selectedId) {
-  $("#overlayList").innerHTML = SHOTS.map(s => {
-    const isSel = s.id === selectedId;
-    return `
-      <button class="assign-opt ${isSel ? "checked" : ""}" data-overlay-pick="${s.id}">
-        <span class="ao-num">${s.nombre.charAt(0).toUpperCase()}</span>
-        <span class="ao-body">
-          <span class="ao-name">${escapeHTML(s.nombre)}</span>
-          <span class="ao-meta">${escapeHTML(s.cat)} · ~${fmtDur(s.duracion)}</span>
-        </span>
-      </button>
-    `;
-  }).join("");
-
-  $$("[data-overlay-pick]").forEach(b => b.addEventListener("click", () => {
-    const id = b.dataset.overlayPick;
-    state.tomas[overlayIndex].overlay = { shotId: id, nota: "" };
-    save();
-    $("#overlayModal").classList.remove("on");
-    renderSecuencia();
-    toast("B-roll asignado", "", "success");
-  }));
-}
-
-$("#overlayClear").addEventListener("click", () => {
-  if (overlayIndex === null) return;
-  state.tomas[overlayIndex].overlay = null;
-  save();
-  $("#overlayModal").classList.remove("on");
-  renderSecuencia();
-  toast("Overlay eliminado", "", "info");
-});
 
 /* ============================================================
    ASIGNACIÓN DE TOMAS A SECCIONES
@@ -842,7 +734,6 @@ function openAssignModal(secId) {
   );
 
   renderAssignList();
-  $("#assignConfirm").style.display = "";
   $("#assignModal").classList.add("on");
 }
 
@@ -880,9 +771,11 @@ function renderAssignList() {
 }
 
 function confirmAssign() {
+  // Primero limpiar todas las tomas que estaban asignadas a esta sección
   state.tomas.forEach(t => {
     if (t.seccionAsignada === assignSectionId) t.seccionAsignada = null;
   });
+  // Luego asignar las seleccionadas
   assignSelected.forEach(i => {
     if (state.tomas[i]) state.tomas[i].seccionAsignada = assignSectionId;
   });
@@ -893,10 +786,14 @@ function confirmAssign() {
 }
 
 function openSectionPickerForToma(i) {
+  // Cicla entre las secciones disponibles + "sin sección"
   const tpl = plantilla(state.plantillaId);
   const options = [{ id: null, label: "Sin sección" }, ...tpl.secciones];
   const current = state.tomas[i].seccionAsignada;
+  const idx = options.findIndex(o => o.id === current);
 
+  // Modal simple: mostramos un picker con las opciones
+  const currentLabel = current ? tpl.secciones.find(s => s.id === current)?.label : "Sin sección";
   const optsHTML = options.map(o => `
     <button class="assign-opt ${o.id === current ? "checked" : ""}" data-pick-sec="${o.id || ""}">
       <span class="ao-num">${o.id ? o.label.charAt(0) : "—"}</span>
@@ -906,21 +803,35 @@ function openSectionPickerForToma(i) {
     </button>
   `).join("");
 
+  // Reutilizamos el modal assign como picker simple
   $("#assignTitle").textContent = `Asignar toma ${i + 1} a una sección`;
   $("#assignList").innerHTML = optsHTML;
-  $("#assignConfirm").style.display = "none";
   $$("[data-pick-sec]").forEach(b => b.addEventListener("click", () => {
     const val = b.dataset.pickSec || null;
     state.tomas[i].seccionAsignada = val;
     save();
     $("#assignModal").classList.remove("on");
-    $("#assignConfirm").style.display = "";
     renderAllGuion(); renderSecuencia();
   }));
+  // Cambiar el botón de confirmar por solo un botón cancelar
+  $("#assignConfirm").style.display = "none";
+  const restore = () => {
+    $("#assignConfirm").style.display = "";
+    $("#assignConfirm").removeEventListener("click", restore);
+    $("#assignModal").removeEventListener("transitionend", restore);
+  };
+  $("#assignModal").addEventListener("transitionend", restore);
+  // Truco simple: usar el botón cancelar como acción
   $("#assignModal").classList.add("on");
+  // Restaurar el botón confirmar después de cerrar
+  const origClose = () => {
+    setTimeout(() => { $("#assignConfirm").style.display = ""; }, 200);
+    $("#assignModal").removeEventListener("transitionend", origClose);
+  };
+  $("#assignModal").addEventListener("transitionend", origClose);
 }
 
-/* Auto-asignación */
+/* Auto-asignación: distribuye las tomas según los pesos de la plantilla */
 function autoAssignTomas() {
   const tpl = plantilla(state.plantillaId);
   if (state.tomas.length === 0) {
@@ -928,28 +839,35 @@ function autoAssignTomas() {
     return;
   }
 
+  // Distribuir tomas secuencialmente según los pesos
   const total = state.tomas.length;
   let cursor = 0;
   const counts = tpl.secciones.map((sec, idx) => {
-    if (idx === tpl.secciones.length - 1) return total - cursor;
+    if (idx === tpl.secciones.length - 1) {
+      return total - cursor; // el último se lleva el remanente
+    }
     const w = sec.weight || 0;
     const n = Math.max(1, Math.round(total * w));
     cursor += n;
     return n;
   });
 
+  // Ajuste fino si nos pasamos
   let sum = counts.reduce((a, b) => a + b, 0);
   while (sum > total) {
+    // quitar del que más tiene
     const maxIdx = counts.indexOf(Math.max(...counts));
     counts[maxIdx]--;
     sum--;
   }
   while (sum < total) {
+    // añadir al que menos tiene (que no sea el último)
     const minIdx = counts.slice(0, -1).indexOf(Math.min(...counts.slice(0, -1)));
     counts[minIdx]++;
     sum++;
   }
 
+  // Asignar
   let i = 0;
   tpl.secciones.forEach((sec, si) => {
     for (let k = 0; k < counts[si]; k++) {
@@ -974,12 +892,12 @@ function openTransPicker(i) {
   transPickerIndex = i;
   const current = state.tomas[i].transicion || "cut";
 
-  $("#transGrid").innerHTML = allTransitions().map(t => {
+  $("#transGrid").innerHTML = TRANSICIONES.map(t => {
     const previewHTML = t.video
       ? (isYT(t.video)
           ? `<iframe src="${t.video}?mute=1&controls=0&loop=1" allow="autoplay; encrypted-media" loading="lazy"></iframe>`
           : `<video src="${escapeHTML(t.video)}" muted loop autoplay playsinline></video>`)
-      : `<svg viewBox="0 0 24 24">${t.icon || '<circle cx="12" cy="12" r="8"/>'}</svg>`;
+      : `<svg viewBox="0 0 24 24">${t.icon}</svg>`;
 
     return `
       <button class="trans-opt ${t.id === current ? "active" : ""}" data-pick="${t.id}">
@@ -1018,6 +936,7 @@ function closeTransPicker() {
 function renderTransiciones() {
   renderTransChain();
   renderTransCatalog();
+  updateTransBadges();
 }
 
 function renderTransChain() {
@@ -1059,6 +978,7 @@ function renderTransChain() {
 }
 
 function renderTransCatalog() {
+  // Cuántas veces se usa cada transición en la secuencia
   const usage = {};
   state.tomas.forEach((t, i) => {
     if (i === 0) return;
@@ -1066,84 +986,31 @@ function renderTransCatalog() {
     usage[id] = (usage[id] || 0) + 1;
   });
 
-  $("#transCatalog").innerHTML = allTransitions().map(t => {
+  $("#transCatalog").innerHTML = TRANSICIONES.map(t => {
     const previewHTML = t.video
       ? (isYT(t.video)
           ? `<iframe src="${t.video}?mute=1&controls=0&loop=1" allow="autoplay; encrypted-media" loading="lazy"></iframe>`
           : `<video src="${escapeHTML(t.video)}" muted loop autoplay playsinline></video>`)
-      : `<svg viewBox="0 0 24 24">${t.icon || '<circle cx="12" cy="12" r="8"/>'}</svg>`;
+      : `<svg viewBox="0 0 24 24">${t.icon}</svg>`;
     const count = usage[t.id] || 0;
     return `
-      <div class="trans-card ${t.custom ? "custom" : ""}">
+      <div class="trans-card">
         <div class="tc-icon">${previewHTML}</div>
         <div class="tc-name">${escapeHTML(t.label)}</div>
         <div class="tc-desc">${escapeHTML(t.desc)}</div>
         <div class="tc-count">${count === 0 ? "no usada" : `${count}×`}</div>
-        ${t.custom ? `
-          <div class="tc-actions">
-            <button data-trans-edit="${t.id}">Editar</button>
-            <button class="danger" data-trans-del="${t.id}">Eliminar</button>
-          </div>
-        ` : ""}
       </div>
     `;
   }).join("");
-
-  $$("[data-trans-edit]").forEach(b => b.addEventListener("click", () => openTransEdit(b.dataset.transEdit)));
-  $$("[data-trans-del]").forEach(b => b.addEventListener("click", () => {
-    const t = state.customTransitions.find(x => x.id === b.dataset.transDel);
-    if (!t) return;
-    openConfirm("Eliminar transición", `Se eliminará "${t.label}". Las tomas que la usen pasarán a "Corte".`, "Eliminar", () => {
-      state.customTransitions = state.customTransitions.filter(x => x.id !== t.id);
-      state.tomas.forEach(toma => {
-        if (toma.transicion === t.id) toma.transicion = "cut";
-      });
-      save(); renderTransiciones(); renderSecuencia();
-      toast("Transición eliminada", "", "info");
-    });
-  }));
 }
 
-/* ============================================================
-   TRANS EDIT
-   ============================================================ */
-let editingTransId = null;
-
-function openTransEdit(id) {
-  editingTransId = id || null;
-  const t = id ? state.customTransitions.find(x => x.id === id) : null;
-  $("#transEditTitle").textContent = t ? "Editar transición" : "Nueva transición";
-  $("#transEditName").value = t ? t.label : "";
-  $("#transEditDesc").value = t ? t.desc : "";
-  $("#transEditVideo").value = t ? (t.video || "") : "";
-  $("#transEditModal").classList.add("on");
-  setTimeout(() => $("#transEditName").focus(), 60);
-}
-
-function saveTransEdit() {
-  const label = $("#transEditName").value.trim();
-  const desc = $("#transEditDesc").value.trim();
-  const video = $("#transEditVideo").value.trim();
-  if (!label) { toast("Nombre requerido", "", "danger"); return; }
-
-  if (editingTransId) {
-    const t = state.customTransitions.find(x => x.id === editingTransId);
-    if (t) { t.label = label; t.desc = desc; t.video = video; }
-    toast("Transición actualizada", "", "success");
-  } else {
-    state.customTransitions.push({
-      id: "ct" + Date.now(),
-      label,
-      desc,
-      video,
-      icon: '<rect x="4" y="6" width="10" height="12" rx="1" opacity="0.5"/><path d="M16 12h5"/><polyline points="18 9 21 12 18 15"/>',
-      custom: true,
-    });
-    toast("Transición añadida", label, "success");
+function updateTransBadges() {
+  const n = Math.max(0, state.tomas.length - 1);
+  const badge = $(`[data-badge="tomas"]`);
+  if (badge) {
+    badge.hidden = state.tomas.length === 0;
+    badge.textContent = state.tomas.length;
   }
-  save();
-  $("#transEditModal").classList.remove("on");
-  renderTransiciones();
 }
 
 /* ============================================================
@@ -1215,6 +1082,7 @@ function renderHooks() {
     return true;
   });
 
+  // Stats
   $("#statHooksTotal").textContent = state.hooks.length;
   $("#statHooksFav").textContent = state.hooks.filter(h => h.fav).length;
   $("#statHooksUsed").textContent = state.hooks.filter(h => h.uses > 0).length;
@@ -1260,6 +1128,7 @@ function renderHooks() {
     `;
   }).join("");
 
+  // Bindings
   $$("[data-hook-fav-toggle]").forEach(b => b.addEventListener("click", () => {
     const h = state.hooks.find(x => x.id === b.dataset.hookFavToggle);
     if (!h) return;
@@ -1331,7 +1200,7 @@ function saveHookEdit() {
 }
 
 /* ============================================================
-   INSERTAR HOOK
+   INSERTAR HOOK EN SECCIÓN
    ============================================================ */
 let pendingHook = null;
 let pendingSectionId = null;
@@ -1342,10 +1211,12 @@ function insertHookIntoSection(h, secId) {
   pendingSectionId = secId;
 
   if (vars.length === 0) {
+    // Insertar directo
     insertHookText(h.texto);
     return;
   }
 
+  // Mostrar modal de variables
   $("#varFields").innerHTML = vars.map(v => `
     <div class="field">
       <label class="field-label">${escapeHTML(v)}</label>
@@ -1412,6 +1283,7 @@ function insertHookText(text) {
   const current = state.secciones[secId] || "";
   state.secciones[secId] = current.trim() ? current + "\n" + text : text;
 
+  // Contar uso
   if (pendingHook) {
     pendingHook.uses = (pendingHook.uses || 0) + 1;
   }
@@ -1426,18 +1298,16 @@ function insertHookText(text) {
 }
 
 /* ============================================================
-   DRAWER (hooks rápidos)
+   DRAWER (hooks rápidos desde la tab Guion)
    ============================================================ */
 let drawerSectionId = null;
 let drawerSearchQuery = "";
 let drawerFilterCat = "all";
-let drawerFavOnly = false;
 
 function openHooksDrawer(context, secId) {
   drawerSectionId = secId;
   drawerSearchQuery = "";
   drawerFilterCat = "all";
-  drawerFavOnly = false;
   $("#drawerSearch").value = "";
   renderDrawerFilters();
   renderDrawerList();
@@ -1454,8 +1324,8 @@ function closeDrawer() {
 
 function renderDrawerFilters() {
   $("#drawerFilters").innerHTML = `
-    <button class="filter-chip ${drawerFilterCat === "all" && !drawerFavOnly ? "active" : ""}" data-drawer-cat="all">Todas</button>
-    <button class="filter-chip ${drawerFavOnly ? "active" : ""}" data-drawer-fav-only style="color:${drawerFavOnly ? "#fff" : "var(--warning)"};background:${drawerFavOnly ? "var(--warning)" : ""};border-color:rgba(245,158,11,.3)">★ Favoritos</button>
+    <button class="filter-chip ${drawerFilterCat === "all" ? "active" : ""}" data-drawer-cat="all">Todas</button>
+    <button class="filter-chip" data-drawer-fav-only style="color:var(--warning);border-color:rgba(245,158,11,.3)">★ Favoritos</button>
     ${CATEGORIAS_HOOKS.map(c => `
       <button class="filter-chip ${drawerFilterCat === c.id ? "active" : ""}" data-drawer-cat="${c.id}">
         ${escapeHTML(c.label)}
@@ -1464,20 +1334,23 @@ function renderDrawerFilters() {
   `;
   $$("[data-drawer-cat]").forEach(b => b.addEventListener("click", () => {
     drawerFilterCat = b.dataset.drawerCat;
-    drawerFavOnly = false;
     renderDrawerFilters(); renderDrawerList();
   }));
   $$("[data-drawer-fav-only]").forEach(b => b.addEventListener("click", () => {
-    drawerFavOnly = !drawerFavOnly;
-    if (drawerFavOnly) drawerFilterCat = "all";
-    renderDrawerFilters(); renderDrawerList();
+    // Alterna entre todos y solo favoritos
+    const isFavActive = b.classList.toggle("active");
+    b.style.background = isFavActive ? "var(--warning)" : "";
+    b.style.color = isFavActive ? "#fff" : "var(--warning)";
+    window._drawerFavOnly = isFavActive;
+    renderDrawerList();
   }));
 }
 
 function renderDrawerList() {
   const q = drawerSearchQuery.toLowerCase().trim();
+  const favOnly = window._drawerFavOnly;
   const list = state.hooks.filter(h => {
-    if (drawerFavOnly && !h.fav) return false;
+    if (favOnly && !h.fav) return false;
     if (drawerFilterCat !== "all" && h.cat !== drawerFilterCat) return false;
     if (q && !h.texto.toLowerCase().includes(q)) return false;
     return true;
@@ -1489,7 +1362,7 @@ function renderDrawerList() {
   }
 
   $("#drawerList").innerHTML = list.map(h => {
-    const html = escapeHTML(h.texto).replace(/\[([^\]]+)\]/g, '<span style="color:var(--brand);font-weight:600;background:var(--brand-subtle);padding:0 3px;border-radius:3px">[$1]</span>');
+    const html = escapeHTML(h.texto).replace(/\[([^\]]+)\]/g, '<span class="hp-var" style="color:var(--brand);font-weight:600;background:var(--brand-subtle);padding:0 3px;border-radius:3px">[$1]</span>');
     return `
       <button class="quick-hook" data-drawer-pick="${h.id}">
         ${h.fav ? '<span style="color:var(--warning);margin-right:4px">★</span>' : ""}${html}
@@ -1577,25 +1450,6 @@ function renderPlay() {
     screen.innerHTML = `<iframe src="${s.video}?autoplay=1&mute=1&controls=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   } else {
     screen.innerHTML = `<video src="${escapeHTML(s.video)}" autoplay loop muted playsinline controls></video>`;
-  }
-
-  // Overlay (B-roll)
-  const existingOv = screen.querySelector(".play-overlay");
-  if (existingOv) existingOv.remove();
-  const ov = it.overlay && it.overlay.shotId ? shot(it.overlay.shotId) : null;
-  if (ov) {
-    const ovEl = document.createElement("div");
-    ovEl.className = "play-overlay";
-    let ovContent;
-    if (!ov.video) {
-      ovContent = `<span style="color:rgba(255,255,255,.3);font-size:10px;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.2em">${escapeHTML(ov.cat)}</span>`;
-    } else if (isYT(ov.video)) {
-      ovContent = `<iframe src="${ov.video}?autoplay=1&mute=1&controls=0&loop=1" allow="autoplay; encrypted-media"></iframe>`;
-    } else {
-      ovContent = `<video src="${escapeHTML(ov.video)}" autoplay loop muted playsinline></video>`;
-    }
-    ovEl.innerHTML = `<span class="po-label">B-roll</span>${ovContent}`;
-    screen.appendChild(ovEl);
   }
 
   $("#playBar").style.width = ((playIndex + 1) / state.tomas.length * 100) + "%";
@@ -1768,9 +1622,9 @@ $("#btnNewHook").addEventListener("click", () => openHookEdit(null));
 $("#hookEditSave").addEventListener("click", saveHookEdit);
 $("#hookUseConfirm").addEventListener("click", confirmHookUse);
 
-$("#btnOpenHooks").addEventListener("click", () => openHooksDrawer("guion", "hook"));
-$("#btnNewTrans").addEventListener("click", () => openTransEdit(null));
-$("#transEditSave").addEventListener("click", saveTransEdit);
+$("#btnOpenHooks").addEventListener("click", () => {
+  openHooksDrawer("guion", "hook");
+});
 
 $("#assignConfirm").addEventListener("click", confirmAssign);
 
@@ -1824,6 +1678,7 @@ $("#btnImportar").addEventListener("click", () => {
   input.click();
 });
 
+/* Hook use modal: Enter avanza entre campos */
 $("#hookUseModal").addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.tagName === "INPUT") {
     const inputs = $$("#varFields [data-var]");
@@ -1838,6 +1693,7 @@ $("#hookUseModal").addEventListener("keydown", e => {
   }
 });
 
+/* Atajos */
 document.addEventListener("keydown", e => {
   if ((e.metaKey || e.ctrlKey) && e.key === "s") {
     e.preventDefault();
@@ -1850,6 +1706,7 @@ document.addEventListener("keydown", e => {
     e.preventDefault();
     copiarGuion();
   }
+  // Cmd/Ctrl + 1..4 → tabs
   if ((e.metaKey || e.ctrlKey) && e.key >= "1" && e.key <= "4") {
     const tabs = ["guion", "tomas", "transiciones", "hooks"];
     const idx = +e.key - 1;
@@ -1874,10 +1731,5 @@ document.addEventListener("keydown", e => {
    INIT
    ============================================================ */
 load();
-
-// Guion de referencia: estado inicial
-$("#guionRef").classList.toggle("open", state.ui.guionRefOpen);
-$("[data-guion-toggle]").addEventListener("click", toggleGuionRef);
-
 switchTab(state.activeTab || "guion");
 renderAll();

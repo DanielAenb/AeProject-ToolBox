@@ -3,6 +3,7 @@
    assets/guion.css
 
    Hereda tokens y componentes de base.css.
+   Aquí solo vive lo propio de esta herramienta.
    ============================================================ */
 
 /* ============================================================
@@ -111,6 +112,7 @@
 .panel-side { position: sticky; top: 84px; }
 .panel-side-left { position: sticky; top: 84px; }
 
+/* Section base */
 .section {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -149,59 +151,7 @@
 .chips-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-}
-
-/* ---------- Chips visibles ---------- */
-.filter-chip {
-  font: inherit;
-  font-size: 11.5px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: var(--r-full);
-  color: var(--text-muted);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
   gap: 4px;
-}
-.filter-chip:hover {
-  background: var(--surface-3);
-  border-color: var(--border-strong);
-  color: var(--text);
-}
-.filter-chip.active {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-}
-
-.dur-chip {
-  font: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 5px 12px;
-  border-radius: var(--r-full);
-  color: var(--text-muted);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-  font-variant-numeric: tabular-nums;
-}
-.dur-chip:hover {
-  background: var(--surface-3);
-  border-color: var(--border-strong);
-  color: var(--text);
-}
-.dur-chip.active {
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
 }
 
 .tpl-picker {
@@ -359,6 +309,11 @@
   color: #fff;
   border-color: var(--brand);
 }
+.script-sec .sec-actions button.warn-action {
+  color: var(--warning);
+  background: var(--warning-subtle);
+  border-color: var(--warning-subtle);
+}
 
 /* Tomas asignadas a sección */
 .sec-tomas {
@@ -418,6 +373,7 @@
   border: 1px solid var(--border);
   border-radius: var(--r-full);
   padding: 3px 8px 3px 6px;
+  cursor: default;
   max-width: 100%;
   min-width: 0;
 }
@@ -447,6 +403,22 @@
   font-size: 11.5px;
   color: var(--text-subtle);
   line-height: 1.45;
+}
+
+/* Marcadores inline @tomaN en el texto */
+.sec-textarea-wrap { position: relative; }
+.inline-marker {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--brand);
+  background: var(--brand-subtle);
+  border-radius: var(--r-xs);
+  padding: 0 4px;
+  margin: 0 1px;
+  cursor: default;
+  vertical-align: baseline;
 }
 
 /* Progress block */
@@ -500,7 +472,7 @@
   font-family: var(--font-mono);
 }
 
-/* Quick hooks */
+/* Quick hooks (sidebar) */
 .quick-hooks {
   display: flex;
   flex-direction: column;
@@ -511,7 +483,7 @@
 .quick-hook {
   text-align: left;
   font: inherit;
-  color: var(--text-muted);
+  color: inherit;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -519,6 +491,7 @@
   cursor: pointer;
   font-size: 12px;
   line-height: 1.45;
+  color: var(--text-muted);
   transition: all var(--dur) var(--ease);
 }
 .quick-hook:hover {
@@ -636,124 +609,6 @@
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-subtle);
-}
-
-/* Panel guion de referencia en tab Tomas */
-.guion-ref {
-  background: var(--surface);
-}
-.guion-ref-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  cursor: pointer;
-  user-select: none;
-}
-.guion-ref-head .gr-title {
-  font-size: 11.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-.guion-ref-head .gr-info {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--text-subtle);
-}
-.guion-ref-head .gr-toggle {
-  margin-left: auto;
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: var(--r-sm);
-  color: var(--text-subtle);
-  transition: transform var(--dur) var(--ease);
-}
-.guion-ref.open .gr-toggle { transform: rotate(180deg); }
-.guion-ref-body {
-  padding: 0 16px 14px;
-  display: none;
-}
-.guion-ref.open .guion-ref-body { display: block; }
-
-.guion-ref-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 8px;
-}
-.gr-sec {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
-.gr-sec.empty { border-style: dashed; }
-.gr-sec .grs-head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.gr-sec .grs-label {
-  font-size: 10.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-.gr-sec .grs-label.hook { color: var(--brand); }
-.gr-sec .grs-label.cta  { color: var(--success); }
-.gr-sec .grs-count {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-subtle);
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
-.gr-sec .grs-count.has {
-  color: var(--brand);
-  background: var(--brand-subtle);
-  padding: 1px 6px;
-  border-radius: var(--r-full);
-}
-.gr-sec .grs-text {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.gr-sec.empty .grs-text { color: var(--text-subtle); font-style: italic; }
-.gr-sec .grs-actions {
-  display: flex;
-  gap: 4px;
-  margin-top: 2px;
-  flex-wrap: wrap;
-}
-.gr-sec .grs-actions button {
-  font: inherit;
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--brand);
-  background: transparent;
-  border: 1px solid var(--brand-subtle);
-  padding: 3px 8px;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-}
-.gr-sec .grs-actions button:hover {
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
 }
 
 /* Secuencia */
@@ -934,7 +789,6 @@
   flex-shrink: 0;
   transition: all var(--dur) var(--ease);
   background: transparent; border: 0;
-  cursor: pointer;
 }
 .seq-remove:hover { background: var(--danger-subtle); color: var(--danger); }
 
@@ -1070,48 +924,6 @@
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
-/* Overlay (B-roll) chip en card */
-.seq-overlay {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10.5px;
-  font-family: inherit;
-  color: var(--text-subtle);
-  background: transparent;
-  border: 1px dashed var(--border);
-  border-radius: var(--r-full);
-  padding: 2px 8px;
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-  max-width: 100%;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.seq-overlay:hover {
-  color: var(--brand);
-  border-color: var(--brand);
-  border-style: solid;
-}
-.seq-overlay.assigned {
-  background: var(--info-subtle);
-  color: var(--info);
-  border: 1px solid transparent;
-  font-weight: 500;
-}
-.seq-overlay.assigned:hover {
-  background: var(--info);
-  color: #fff;
-}
-.seq-overlay .so-x {
-  margin-left: 2px;
-  cursor: pointer;
-  opacity: 0.7;
-}
-.seq-overlay .so-x:hover { opacity: 1; }
-
 /* ============================================================
    TRANSICIONES
    ============================================================ */
@@ -1163,8 +975,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border: 0;
-  font-family: inherit;
 }
 .trans-chain-arrow:hover { background: var(--brand); color: #fff; }
 .trans-chain-arrow.is-default {
@@ -1237,42 +1047,6 @@
   font-family: var(--font-mono);
   font-size: 10.5px;
   color: var(--text-subtle);
-}
-.trans-card.custom .tc-name::after {
-  content: "custom";
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--brand);
-  background: var(--brand-subtle);
-  padding: 1px 5px;
-  border-radius: var(--r-full);
-  margin-left: 6px;
-}
-.trans-card .tc-actions {
-  display: flex;
-  gap: 4px;
-  margin-top: 4px;
-}
-.trans-card .tc-actions button {
-  font: inherit;
-  font-size: 10.5px;
-  color: var(--text-subtle);
-  background: transparent;
-  border: 0;
-  padding: 2px 6px;
-  border-radius: var(--r-xs);
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-}
-.trans-card .tc-actions button:hover {
-  background: var(--surface-3);
-  color: var(--text);
-}
-.trans-card .tc-actions button.danger:hover {
-  background: var(--danger-subtle);
-  color: var(--danger);
 }
 
 /* ============================================================
@@ -1557,6 +1331,7 @@
   display: flex; justify-content: flex-end; gap: 8px;
 }
 
+/* Trans picker */
 .trans-panel {
   width: min(680px, calc(100% - 32px));
   max-height: calc(100vh - 40px);
@@ -1638,6 +1413,7 @@
   line-height: 1.4;
 }
 
+/* Assign modal */
 .assign-panel {
   width: min(520px, calc(100% - 32px));
   max-height: calc(100vh - 40px);
@@ -1668,10 +1444,6 @@
   border-radius: var(--r-sm);
   cursor: pointer;
   transition: all var(--dur) var(--ease);
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  width: 100%;
 }
 .assign-opt:hover { border-color: var(--border-strong); }
 .assign-opt.checked {
@@ -1695,8 +1467,6 @@
 .assign-opt .ao-body {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
 }
 .assign-opt .ao-name {
   font-size: 12.5px;
@@ -1709,6 +1479,7 @@
   font-family: var(--font-mono);
 }
 
+/* Hook edit */
 .edit-panel {
   width: min(560px, calc(100% - 32px));
   max-height: calc(100vh - 40px);
@@ -1763,6 +1534,7 @@
   border: 1px solid var(--border);
 }
 
+/* Hook use */
 .use-panel {
   width: min(520px, calc(100% - 32px));
 }
@@ -1794,15 +1566,6 @@
 .var-preview .pending {
   color: var(--text-subtle);
   font-weight: 500;
-}
-
-#transEditModal .modal-panel {
-  width: min(520px, calc(100% - 32px));
-  max-height: calc(100vh - 40px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 20px;
 }
 
 /* ============================================================
@@ -1862,8 +1625,8 @@
   overflow: hidden;
   display: flex; align-items: center; justify-content: center;
 }
-.play-screen > video,
-.play-screen > iframe {
+.play-screen video,
+.play-screen iframe {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: contain;
@@ -1876,42 +1639,6 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
 }
-
-.play-overlay {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 30%;
-  max-width: 280px;
-  aspect-ratio: 16/9;
-  background: #000;
-  border: 2px solid var(--brand);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  z-index: 3;
-}
-.play-overlay video,
-.play-overlay iframe {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  border: 0;
-}
-.play-overlay .po-label {
-  position: absolute;
-  top: 6px; left: 6px;
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: var(--brand);
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: var(--r-xs);
-  z-index: 2;
-}
-
 .play-info {
   text-align: center;
   max-width: 720px;
@@ -1990,7 +1717,7 @@
 }
 
 /* ============================================================
-   TOAST + EMPTY
+   TOAST
    ============================================================ */
 .toast-host {
   position: fixed;
@@ -2044,5 +1771,4 @@
   .hooks-grid { grid-template-columns: 1fr; }
   .trans-grid-catalog { grid-template-columns: 1fr; }
   .seq-item { flex: 0 0 200px; }
-  .guion-ref-grid { grid-template-columns: 1fr; }
 }
