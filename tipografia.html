@@ -200,6 +200,45 @@
   </div>
 </div>
 
+<!-- Modal: guardar preset -->
+<div class="modal" id="savePresetModal">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Guardar sistema</h3>
+      <button class="modal-x" data-close>
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Ponle un nombre para identificarlo después en la lista de presets.</p>
+    <div class="modal-input">
+      <input class="input" id="presetName" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="presetSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: confirmar -->
+<div class="modal" id="confirmModal">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="confirmTitle">Confirmar</h3>
+      <button class="modal-x" data-close>
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-danger" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <script src="assets/utils.js"></script>
 <script src="assets/tipografia.js"></script>
 

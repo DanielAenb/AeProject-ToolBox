@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#FE0557" />
+<title>Referencias · Ae Project .studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/referencias.css" />
+</head>
+
+<body>
+
+<!-- ============================================================ HEADER -->
+<header class="app-header">
+  <a href="index.html" class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Ae Project</span>
+    <span class="brand-tld">.studio</span>
+  </a>
+  <span class="tool-name">Referencias</span>
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <div class="search-box">
+      <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="searchInput" placeholder="Buscar en todas las fichas…" />
+    </div>
+    <button class="btn btn-secondary btn-sm" id="btnNewRubro">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="label-hide">Nuevo rubro</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================ MAIN -->
+<main class="ref-main">
+
+  <aside class="ref-sidebar">
+    <div class="sidebar-head">
+      <span class="sh-title">Rubros</span>
+      <div class="spacer"></div>
+      <span class="sh-count" id="rubrosCount">0</span>
+    </div>
+    <div class="rubro-list" id="rubroList"></div>
+  </aside>
+
+  <div class="ref-content">
+    <div class="content-head">
+      <div class="ch-left">
+        <h2 class="ch-title" id="contentTitle">—</h2>
+        <span class="ch-count" id="contentCount"></span>
+      </div>
+      <div class="ch-right">
+        <button class="btn btn-primary btn-sm" id="btnNewFicha">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Nueva ficha
+        </button>
+      </div>
+    </div>
+
+    <div class="fichas-area" id="fichasArea"></div>
+  </div>
+
+</main>
+
+<!-- ============================================================ RUBRO MODAL -->
+<div class="modal" id="rubroModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="rubroModalTitle">Nuevo rubro</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Agrupa fichas de un mismo tema. Ej: Gimnasios, Carpintería, Restaurantes.</p>
+
+    <div class="edit-form">
+      <div class="field">
+        <label class="field-label">Nombre</label>
+        <input class="input" id="rubroNombre" placeholder="Ej. Gimnasios" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label class="field-label">Color</label>
+        <div class="color-picker" id="rubroColorPicker"></div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="rubroSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ FICHA MODAL -->
+<div class="modal" id="fichaModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel ficha-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="fichaModalTitle">Nueva ficha</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="ficha-body">
+
+      <!-- Capturas -->
+      <div class="ficha-block">
+        <div class="ficha-block-head">
+          <span class="fb-title">Capturas</span>
+          <span class="fb-count" id="capturasCount">0</span>
+          <div class="spacer"></div>
+          <button class="btn btn-ghost btn-sm" id="btnAddCaptura">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Añadir
+          </button>
+        </div>
+        <div class="capturas-drop" id="capturasDrop" tabindex="0">
+          <div class="capturas-empty" id="capturasEmpty">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div>Arrastra imágenes, pégalas con <span class="mono">Ctrl/Cmd+V</span><br>o pulsa "Añadir".</div>
+          </div>
+          <div class="capturas-grid" id="capturasGrid"></div>
+        </div>
+      </div>
+
+      <!-- Nombre -->
+      <div class="ficha-block ficha-fields">
+        <div class="field">
+          <label class="field-label">Nombre</label>
+          <input class="input" id="fichaNombre" placeholder="Ej. Gymshark" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label class="field-label">Instagram</label>
+          <input class="input" id="fichaInstagram" placeholder="@usuario" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- Copy -->
+      <div class="ficha-block">
+        <div class="ficha-block-head">
+          <span class="fb-title">Copy</span>
+          <div class="spacer"></div>
+          <button class="btn btn-ghost btn-sm" id="btnCopyText" type="button">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copiar
+          </button>
+        </div>
+        <textarea class="textarea" id="fichaCopy" placeholder="Pega aquí el texto del post…"></textarea>
+      </div>
+
+    </div>
+
+    <div class="modal-actions ficha-actions">
+      <button class="btn btn-ghost btn-sm" id="btnMoveFicha" type="button">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+        Mover a rubro
+      </button>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost danger-ghost" id="btnDeleteFicha" type="button">Eliminar</button>
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="btnSaveFicha">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ MOVE MODAL -->
+<div class="modal modal-raised" id="moveModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Mover ficha a…</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Se guardarán los cambios y la ficha pasará al rubro seleccionado.</p>
+    <div class="move-list" id="moveList"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose" aria-label="Cerrar">
+    <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Anterior">
+    <svg class="icon icon-lg" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Siguiente">
+    <svg class="icon icon-lg" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-counter" id="lbCounter">0 / 0</div>
+</div>
+
+<!-- ============================================================ CONFIRM MODAL -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="confirmTitle">Confirmar</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-danger" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" multiple hidden />
+<div class="toast-host" id="toastHost"></div>
+
+<script src="assets/utils.js"></script>
+<script src="assets/referencias.js"></script>
+
+</body>
+</html>

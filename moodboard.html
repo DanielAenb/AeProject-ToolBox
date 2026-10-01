@@ -126,6 +126,24 @@
 
 </main>
 
+<!-- Modal confirmar -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="confirmTitle">Confirmar</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-danger" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="fileInput" accept="image/*" multiple hidden />
 <div class="toast-host" id="toastHost"></div>
 

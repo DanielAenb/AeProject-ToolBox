@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#FE0557" />
 <title>Tarifario · Ae Project .studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/base.css" />
-<script src="assets/utils.js"></script>
 
 <style>
   /* ============================================================
@@ -23,18 +23,6 @@
     -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
   }
-  .app-header .brand {
-    display: flex; align-items: center; gap: 8px;
-    font-weight: 600; letter-spacing: -0.01em;
-    color: var(--text);
-  }
-  .app-header .brand-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--brand);
-    box-shadow: 0 0 0 3px var(--brand-subtle);
-  }
-  .app-header .brand-name { font-size: 14px; }
-  .app-header .brand-tld { color: var(--text-subtle); font-size: 14px; font-weight: 400; }
   .app-header .tool-name {
     font-size: 13px; color: var(--text-muted);
     padding-left: 12px; margin-left: 4px;
@@ -42,18 +30,6 @@
   }
   .app-header .spacer { flex: 1; }
   .app-header .actions { display: flex; gap: 6px; align-items: center; }
-
-  .theme-toggle {
-    width: 34px; height: 34px;
-    display: inline-flex; align-items: center; justify-content: center;
-    border-radius: var(--r-md);
-    color: var(--text-muted);
-    transition: all var(--dur) var(--ease);
-  }
-  .theme-toggle:hover { background: var(--surface-2); color: var(--text); }
-  .theme-toggle .icon-sun { display: none; }
-  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
-  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
   /* ============================================================
      Layout
@@ -186,22 +162,133 @@
   }
   .meta-fields .field-full { grid-column: 1 / -1; }
 
-  /* Items */
-  .items-list { display: flex; flex-direction: column; gap: 8px; }
-  .item {
+  /* Secciones */
+  .seciones-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .seciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sec-block {
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
     padding: 10px;
+    transition: border-color var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+    cursor: default;
+  }
+  .sec-block.active {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-glow);
+  }
+  .sec-block .sec-block-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .sec-block .sec-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-subtle);
+    background: var(--surface-3);
+    min-width: 20px;
+    height: 20px;
+    border-radius: var(--r-xs);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    padding: 0 5px;
+  }
+  .sec-block .sec-title-input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--r-xs);
+    padding: 3px 6px;
+    margin: -3px -6px;
+    color: var(--text);
+    transition: all var(--dur) var(--ease);
+  }
+  .sec-block .sec-title-input:hover { border-color: var(--border); }
+  .sec-block .sec-title-input:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--brand);
+  }
+  .sec-block .sec-title-input::placeholder {
+    color: var(--text-subtle);
+    font-weight: 500;
+    font-style: italic;
+  }
+  .sec-block .sec-del {
+    width: 22px; height: 22px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-sm);
+    color: var(--text-subtle);
+    background: transparent; border: 0;
+    cursor: pointer;
+    transition: all var(--dur) var(--ease);
+    flex-shrink: 0;
+  }
+  .sec-block .sec-del:hover {
+    background: var(--danger-subtle);
+    color: var(--danger);
+  }
+  .sec-block .sec-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sec-block .sec-empty {
+    border: 1px dashed var(--border);
+    border-radius: var(--r-sm);
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--text-subtle);
+    line-height: 1.5;
+  }
+  .sec-block .sec-subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    margin-top: 6px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-block .sec-subtotal strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* Items dentro de secciones (reusa la misma estructura visual) */
+  .item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 8px;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 6px 8px;
+    gap: 4px 6px;
     transition: border-color var(--dur) var(--ease);
   }
   .item:hover { border-color: var(--border-strong); }
   .item .item-name {
     grid-column: 1 / 2;
-    font-size: 13px; font-weight: 600;
+    font-size: 12.5px; font-weight: 600;
     line-height: 1.3;
     overflow: hidden;
     color: var(--text);
@@ -219,41 +306,38 @@
   .item .item-name input:hover { border-color: var(--border); }
   .item .item-name input:focus {
     outline: none;
-    background: var(--surface);
+    background: var(--surface-2);
     border-color: var(--brand);
   }
   .item .item-remove {
     grid-column: 2 / 3;
-    width: 22px; height: 22px; padding: 0;
+    width: 20px; height: 20px; padding: 0;
     display: flex; align-items: center; justify-content: center;
-    border-radius: var(--r-sm);
+    border-radius: var(--r-xs);
     color: var(--text-subtle);
+    background: transparent; border: 0; cursor: pointer;
     transition: all var(--dur) var(--ease);
   }
   .item .item-remove:hover {
     background: var(--danger-subtle);
     color: var(--danger);
   }
-
-  /* Descripción editable por ítem (auto-resize) */
   .item .item-desc {
     grid-column: 1 / -1;
     width: 100%;
     font: inherit;
-    font-size: 12px;
+    font-size: 11.5px;
     line-height: 1.5;
     color: var(--text-muted);
     background: transparent;
     border: 1px solid transparent;
     border-radius: var(--r-xs);
-    padding: 4px 6px;
-    margin: -2px -6px;
+    padding: 3px 5px;
+    margin: -2px -5px;
     resize: none;
     overflow: hidden;
-    min-height: 22px;
-    transition: background var(--dur) var(--ease),
-                border-color var(--dur) var(--ease),
-                color var(--dur) var(--ease);
+    min-height: 20px;
+    transition: all var(--dur) var(--ease);
   }
   .item .item-desc::placeholder {
     color: var(--text-subtle);
@@ -262,28 +346,27 @@
   .item .item-desc:hover { border-color: var(--border); }
   .item .item-desc:focus {
     outline: none;
-    background: var(--surface);
+    background: var(--surface-2);
     border-color: var(--brand);
     color: var(--text);
-    box-shadow: 0 0 0 3px var(--brand-glow);
+    box-shadow: 0 0 0 2px var(--brand-glow);
   }
-
   .item .item-row {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 60px 1fr auto;
-    gap: 6px;
+    grid-template-columns: 52px 1fr auto;
+    gap: 5px;
     align-items: center;
     margin-top: 2px;
   }
   .item .item-row input {
     width: 100%;
-    height: 28px;
-    padding: 0 8px;
-    background: var(--surface);
+    height: 24px;
+    padding: 0 6px;
+    background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    font-size: 12.5px;
+    border-radius: var(--r-xs);
+    font-size: 11.5px;
     font-variant-numeric: tabular-nums;
     color: var(--text);
     transition: all var(--dur) var(--ease);
@@ -292,45 +375,35 @@
   .item .item-row input:focus {
     outline: none;
     border-color: var(--brand);
-    box-shadow: 0 0 0 3px var(--brand-glow);
+    box-shadow: 0 0 0 2px var(--brand-glow);
   }
   .item .item-sub {
-    font-size: 13px; font-weight: 600;
+    font-size: 12px; font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: var(--text);
-    min-width: 68px; text-align: right;
+    min-width: 60px; text-align: right;
   }
   .item .item-hint {
     grid-column: 1 / -1;
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--text-subtle);
   }
   .item .qty-suffix { position: relative; }
-  .item .qty-suffix input { padding-right: 28px; }
+  .item .qty-suffix input { padding-right: 24px; }
   .item .qty-suffix::after {
     content: attr(data-unit);
     position: absolute;
-    right: 8px; top: 50%;
+    right: 6px; top: 50%;
     transform: translateY(-50%);
-    font-size: 10px;
+    font-size: 9.5px;
     color: var(--text-subtle);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     pointer-events: none;
   }
 
-  .empty-msg {
-    border: 1px dashed var(--border);
-    border-radius: var(--r-md);
-    padding: 22px 14px;
-    text-align: center;
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.5;
-  }
-
-  /* Totales */
+  /* Totales globales */
   .totales {
     border-top: 1px solid var(--border);
     padding-top: 14px;
@@ -409,6 +482,7 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: var(--r-xs);
     color: var(--text-subtle);
+    background: transparent; border: 0; cursor: pointer;
     transition: all var(--dur) var(--ease);
   }
   .saved-item button:hover {
@@ -420,7 +494,40 @@
     color: var(--danger);
   }
 
-  /* ---------- Modal ---------- */
+  /* Personalización del PDF */
+  .pdf-custom {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pdf-custom-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pdf-custom-head .pch-title {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-subtle);
+    font-weight: 600;
+  }
+  .pdf-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pdf-fields .mini-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-subtle);
+    font-weight: 600;
+  }
+
+  /* Modal */
   .modal-head {
     display: flex; align-items: flex-start; gap: 12px;
     margin-bottom: 10px;
@@ -437,6 +544,7 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: var(--r-sm);
     color: var(--text-subtle);
+    background: transparent; border: 0; cursor: pointer;
     transition: all var(--dur) var(--ease);
   }
   .modal-x:hover { background: var(--surface-2); color: var(--text); }
@@ -485,7 +593,7 @@
 
 <!-- ============================================================ HEADER -->
 <header class="app-header">
-  <a href="../index.html" class="brand">
+  <a href="index.html" class="brand">
     <span class="brand-dot"></span>
     <span class="brand-name">Ae Project</span>
     <span class="brand-tld">.studio</span>
@@ -538,6 +646,10 @@
     <div class="cot-body">
 
       <div class="meta-fields">
+        <div class="field field-full">
+          <label class="field-label">Título del documento</label>
+          <input class="input" type="text" id="titulo" placeholder="Propuesta y plan de contenido" />
+        </div>
         <div class="field">
           <label class="field-label">Cliente</label>
           <input class="input" type="text" id="cliente" placeholder="Estudio Norte" />
@@ -546,21 +658,26 @@
           <label class="field-label">Fecha</label>
           <input class="input" type="date" id="fecha" />
         </div>
-        <div class="field field-full">
-          <label class="field-label">Proyecto</label>
-          <input class="input" type="text" id="proyecto" placeholder="Propuesta y plan de contenido" />
-        </div>
       </div>
 
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <span class="field-label" style="margin:0">Ítems</span>
-          <button class="btn btn-ghost btn-sm" id="btnCustom" style="height:22px;padding:0 8px;font-size:11.5px">
-            <svg class="icon icon-sm" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M12 5v14M5 12h14"/></svg>
-            Personalizado
-          </button>
-        </div>
-        <div class="items-list" id="itemsList"></div>
+
+<div class="seciones-head">
+  <span class="field-label" style="margin:0">Secciones</span>
+  <div style="display:flex;gap:4px">
+    <button class="btn btn-ghost btn-sm" id="btnCustom" style="height:22px;padding:0 8px;font-size:11.5px">
+      <svg class="icon icon-sm" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M12 5v14M5 12h14"/></svg>
+      Ítem
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnAddSeccion" style="height:22px;padding:0 8px;font-size:11.5px">
+      <svg class="icon icon-sm" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M12 5v14M5 12h14"/></svg>
+      Sección
+    </button>
+  </div>
+</div>
+        
+        <div class="seciones-list" id="seccionesList"></div>
+
       </div>
 
       <div class="totales">
@@ -569,7 +686,7 @@
           <span id="subtotal">$0.00</span>
         </div>
         <div class="disc-row">
-          <span>Descuento</span>
+          <span>Descuento general</span>
           <div style="display:flex;align-items:center;gap:2px">
             <input class="disc-input" type="number" id="descuento" min="0" max="100" step="1" value="0" />
             <span class="disc-suffix">%</span>
@@ -584,6 +701,19 @@
       <div class="field">
         <label class="field-label">Notas y condiciones</label>
         <textarea class="textarea" id="notas" placeholder="Anticipo 50%. 2 rondas de cambios incluidas. Entrega en 5 días hábiles." style="min-height:70px"></textarea>
+      </div>
+
+      <!-- Personalización del PDF -->
+      <div class="pdf-custom">
+        <div class="pdf-custom-head">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:var(--text-subtle)"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.6-.4-1.1 0-.9.7-1.6 1.6-1.6H16c3 0 5.5-2.5 5.5-5.5C21.5 6 17.5 2 12 2z"/></svg>
+          <span class="pch-title">Personalización del PDF</span>
+        </div>
+
+        <div class="pdf-fields">
+          <span class="mini-label">Mostrar en el PDF</span>
+          <div class="chips-row" id="pdfFieldToggles"></div>
+        </div>
       </div>
 
       <button class="btn btn-ghost btn-sm" id="btnLimpiar" style="color:var(--danger);width:100%">
@@ -628,7 +758,16 @@
 <div id="printArea"></div>
 <div class="toast-host" id="toastHost"></div>
 
+<script src="assets/utils.js"></script>
 <script>
+/* ============================================================
+   CONFIGURACIÓN
+   ────────────────────────────────────────────────────────────
+   LOGO: coloca tu archivo en assets/logo.png (PNG con
+   transparencia). Si no existe, se usará el "Ae" por defecto.
+   ============================================================ */
+const LOGO_URL = "assets/logo.png";
+
 /* ============================================================
    DATOS — edita aquí precios y servicios
    ============================================================ */
@@ -671,33 +810,92 @@ const EMPRESA = {
   validez: '15 días',
 };
 
+const PDF_FIELDS = [
+  { id: "cliente", label: "Cliente" },
+  { id: "fecha",   label: "Fecha" },
+  { id: "validez", label: "Validez" },
+];
+
 /* ============================================================
    ESTADO
    ============================================================ */
-const LS_KEY = "tarifario-cotizador-v3";
+const LS_KEY = "tarifario-cotizador-v4";
+const LS_KEY_OLD = "tarifario-cotizador-v3";
+
+function newSectionId() {
+  return "sec_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6);
+}
+
+function emptySection(titulo) {
+  return { id: newSectionId(), titulo: titulo || "", items: [] };
+}
 
 let state = {
+  titulo: "",
   cliente: "",
-  proyecto: "",
   fecha: today(),
   descuento: 0,
   notas: "",
-  items: [],
+  secciones: [emptySection()],
   guardadas: [],
+  pdfFields: { cliente: true, fecha: true, validez: true },
 };
 
 function save() { store.set(LS_KEY, state); }
+
 function load() {
-  const saved = store.get(LS_KEY);
+  let saved = store.get(LS_KEY);
+  // Migración desde v3 (items planos)
+  if (!saved) {
+    saved = store.get(LS_KEY_OLD);
+    if (saved) {
+      // Envolver items viejos en una sola sección
+      const oldItems = Array.isArray(saved.items) ? saved.items : [];
+      const oldProyecto = saved.proyecto || "";
+      saved = {
+        titulo: oldProyecto,
+        cliente: saved.cliente || "",
+        fecha: saved.fecha || today(),
+        descuento: saved.descuento || 0,
+        notas: saved.notas || "",
+        secciones: [{ id: newSectionId(), titulo: "", items: oldItems }],
+        guardadas: Array.isArray(saved.guardadas) ? saved.guardadas : [],
+        pdfFields: saved.pdfFields || { cliente: true, fecha: true, validez: true },
+      };
+    }
+  }
   if (saved) state = { ...state, ...saved };
+
   if (!state.fecha) state.fecha = today();
+  if (!Array.isArray(state.secciones) || state.secciones.length === 0) {
+    state.secciones = [emptySection()];
+  }
+  state.secciones.forEach(sec => {
+    if (!sec.id) sec.id = newSectionId();
+    if (typeof sec.titulo !== "string") sec.titulo = "";
+    if (!Array.isArray(sec.items)) sec.items = [];
+  });
+  if (!Array.isArray(state.guardadas)) state.guardadas = [];
+  if (!state.pdfFields) state.pdfFields = { cliente: true, fecha: true, validez: true };
+  PDF_FIELDS.forEach(f => {
+    if (typeof state.pdfFields[f.id] !== "boolean") state.pdfFields[f.id] = true;
+  });
 }
 
 const servicio = id => SERVICIOS.find(s => s.id === id);
 const precioBase = s => s.precio != null ? s.precio : s.precioMin;
+const secById = id => state.secciones.find(s => s.id === id);
+
+/* Sección activa (no se persiste) */
+let activeSectionId = null;
+function ensureActive() {
+  if (!secById(activeSectionId)) {
+    activeSectionId = state.secciones[0] ? state.secciones[0].id : null;
+  }
+}
 
 /* ============================================================
-   MODAL — reemplaza prompt() y confirm()
+   MODAL
    ============================================================ */
 const Modal = (() => {
   const el = () => $('#appModal');
@@ -716,7 +914,7 @@ const Modal = (() => {
       inputWrap.hidden = false;
       inputEl.placeholder = placeholder || '';
       inputEl.value = defaultValue || '';
-      inputEl.type = input === 'password' ? 'password' : 'text';
+      inputEl.type = 'text';
     } else {
       inputWrap.hidden = true;
       inputEl.value = '';
@@ -738,7 +936,6 @@ const Modal = (() => {
     keyHandler = (e) => {
       if (e.key === 'Escape') { e.preventDefault(); close(); }
       else if (e.key === 'Enter') {
-        // Enter confirma; salvo que el foco esté en un botón de cancelar
         if (e.target && e.target.id === 'modalCancel') return;
         e.preventDefault();
         triggerConfirm();
@@ -797,11 +994,30 @@ function toast(title, desc = '', variant = 'brand') {
 }
 
 /* ============================================================
-   AUTO-RESIZE de textareas
+   AUTO-RESIZE
    ============================================================ */
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = el.scrollHeight + 'px';
+}
+
+/* ============================================================
+   TOGGLES PDF FIELDS
+   ============================================================ */
+function renderPdfFieldToggles() {
+  const el = $("#pdfFieldToggles");
+  if (!el) return;
+  el.innerHTML = PDF_FIELDS.map(f => `
+    <button class="filter-chip ${state.pdfFields[f.id] ? "active" : ""}" data-pdf-field="${f.id}">
+      ${escapeHTML(f.label)}
+    </button>
+  `).join("");
+  $$("[data-pdf-field]").forEach(b => b.addEventListener("click", () => {
+    const id = b.dataset.pdfField;
+    state.pdfFields[id] = !state.pdfFields[id];
+    save();
+    renderPdfFieldToggles();
+  }));
 }
 
 /* ============================================================
@@ -843,117 +1059,355 @@ function renderCatalogo() {
 
   $('#catalogo').innerHTML = html;
   $$('[data-add]').forEach(el => {
-    el.addEventListener('click', () => addServicio(el.dataset.add));
+    el.addEventListener('click', () => addServicioToActive(el.dataset.add));
   });
 }
 
 /* ============================================================
-   RENDER — Cotización
+   RENDER — Cotización (con secciones)
    ============================================================ */
 function renderCotizacion() {
+  $('#titulo').value = state.titulo;
   $('#cliente').value = state.cliente;
-  $('#proyecto').value = state.proyecto;
   $('#fecha').value = state.fecha;
   $('#descuento').value = state.descuento;
   $('#notas').value = state.notas;
 
-  const n = state.items.length;
-  $('#badgeCount').textContent = `${n} ${n === 1 ? 'ítem' : 'ítems'}`;
+  const totalItems = state.secciones.reduce((a, s) => a + s.items.length, 0);
+  $('#badgeCount').textContent = `${totalItems} ${totalItems === 1 ? 'ítem' : 'ítems'}`;
 
-  const list = $('#itemsList');
-  if (n === 0) {
-    list.innerHTML = `
-      <div class="empty-msg">
-        Aún no hay ítems.<br>Haz clic en un servicio del catálogo para añadirlo.
-      </div>
-    `;
-  } else {
-    list.innerHTML = state.items.map((it, i) => {
-      const sub = (Number(it.cantidad) || 0) * (Number(it.precio) || 0);
-      const step = it.unidad === 'hora' ? '0.5' : '1';
-      const min = it.unidad === 'hora' ? '0.5' : '1';
-      const nameHTML = it.custom
-        ? `<input type="text" data-name="${i}" value="${escapeHTML(it.nombre)}" placeholder="Nombre del servicio" />`
-        : escapeHTML(it.nombre);
-      const hint = it.rango
-        ? `<div class="item-hint">Rango sugerido: ${fmt(it.rango[0])} – ${fmt(it.rango[1])}</div>`
-        : '';
-      const unitShort = (it.unidad || '').slice(0, 3);
-      return `
-        <div class="item">
-          <div class="item-name">${nameHTML}</div>
-          <button class="item-remove" data-remove="${i}" aria-label="Quitar">
+  renderSecciones();
+  updateTotales();
+}
+
+function renderSecciones() {
+  ensureActive();
+  const list = $('#seccionesList');
+  if (!list) return;
+
+  list.innerHTML = state.secciones.map((sec, idx) => {
+    const subtotal = sec.items.reduce((a, it) => a + (Number(it.cantidad) || 0) * (Number(it.precio) || 0), 0);
+    const isActive = sec.id === activeSectionId;
+
+    const itemsHTML = sec.items.length === 0
+      ? `<div class="sec-empty">Sin ítems.<br>Haz clic en un servicio del catálogo para añadirlo aquí.</div>`
+      : `<div class="sec-items">${sec.items.map((it, i) => itemHTML(it, idx, i)).join('')}</div>`;
+
+    return `
+      <div class="sec-block ${isActive ? 'active' : ''}" data-sec-id="${sec.id}">
+        <div class="sec-block-head">
+          <span class="sec-num">${idx + 1}</span>
+          <input class="sec-title-input" type="text" data-sec-title="${sec.id}" value="${escapeHTML(sec.titulo)}" placeholder="Sin título" />
+          <button class="sec-del" data-sec-del="${sec.id}" aria-label="Eliminar sección" title="Eliminar sección">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
-          <textarea
-            class="item-desc"
-            data-desc="${i}"
-            rows="1"
-            placeholder="Añadir descripción…"
-          >${escapeHTML(it.descripcion || '')}</textarea>
-          <div class="item-row">
-            <div class="qty-suffix" data-unit="${escapeHTML(unitShort)}">
-              <input type="number" data-cant="${i}" value="${it.cantidad}" min="${min}" step="${step}" />
-            </div>
-            <input type="number" data-precio="${i}" value="${it.precio}" min="0" step="0.01" />
-            <span class="item-sub">${fmt(sub)}</span>
-          </div>
-          ${hint}
         </div>
-      `;
-    }).join('');
-  }
+        ${itemsHTML}
+        <div class="sec-subtotal">
+          <span>Subtotal</span>
+          <strong>${fmt(subtotal)}</strong>
+        </div>
+      </div>
+    `;
+  }).join('');
 
-  // Bindings
-  $$('[data-remove]').forEach(b => b.addEventListener('click', () => removeItem(+b.dataset.remove)));
-
-  $$('[data-cant]').forEach(inp => inp.addEventListener('input', () => {
-    const i = +inp.dataset.cant;
-    state.items[i].cantidad = inp.value === '' ? 0 : Number(inp.value);
-    save(); updateTotales();
-    const sub = (Number(state.items[i].cantidad) || 0) * (Number(state.items[i].precio) || 0);
-    const row = inp.closest('.item');
-    if (row) row.querySelector('.item-sub').textContent = fmt(sub);
+  // Bindings de sección
+  $$('[data-sec-id]').forEach(el => el.addEventListener('click', (e) => {
+    // No activar al hacer clic en inputs o botones internos
+    if (e.target.closest('input, textarea, button')) return;
+    activeSectionId = el.dataset.secId;
+    renderSecciones();
   }));
 
-  $$('[data-precio]').forEach(inp => inp.addEventListener('input', () => {
-    const i = +inp.dataset.precio;
-    state.items[i].precio = inp.value === '' ? 0 : Number(inp.value);
-    save(); updateTotales();
-    const sub = (Number(state.items[i].cantidad) || 0) * (Number(state.items[i].precio) || 0);
-    const row = inp.closest('.item');
-    if (row) row.querySelector('.item-sub').textContent = fmt(sub);
-  }));
-
-  $$('[data-name]').forEach(inp => inp.addEventListener('input', () => {
-    const i = +inp.dataset.name;
-    state.items[i].nombre = inp.value;
+  $$('[data-sec-title]').forEach(inp => inp.addEventListener('input', () => {
+    const s = secById(inp.dataset.secTitle);
+    if (!s) return;
+    s.titulo = inp.value;
     save();
   }));
 
-  // Descripción editable + auto-resize
+  $$('[data-sec-del]').forEach(b => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    removeSection(b.dataset.secDel);
+  }));
+
+  // Bindings de items dentro de cada sección
+  bindItemEvents();
+}
+
+function itemHTML(it, secIdx, itemIdx) {
+  const sub = (Number(it.cantidad) || 0) * (Number(it.precio) || 0);
+  const step = it.unidad === 'hora' ? '0.5' : '1';
+  const min = it.unidad === 'hora' ? '0.5' : '1';
+  const nameHTML = it.custom
+    ? `<input type="text" data-name="${secIdx}:${itemIdx}" value="${escapeHTML(it.nombre)}" placeholder="Nombre del servicio" />`
+    : escapeHTML(it.nombre);
+  const hint = it.rango
+    ? `<div class="item-hint">Rango: ${fmt(it.rango[0])} – ${fmt(it.rango[1])}</div>`
+    : '';
+  const unitShort = (it.unidad || '').slice(0, 3);
+  return `
+    <div class="item" data-item="${secIdx}:${itemIdx}">
+      <div class="item-name">${nameHTML}</div>
+      <button class="item-remove" data-remove="${secIdx}:${itemIdx}" aria-label="Quitar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <textarea class="item-desc" data-desc="${secIdx}:${itemIdx}" rows="1" placeholder="Descripción…">${escapeHTML(it.descripcion || '')}</textarea>
+      <div class="item-row">
+        <div class="qty-suffix" data-unit="${escapeHTML(unitShort)}">
+          <input type="number" data-cant="${secIdx}:${itemIdx}" value="${it.cantidad}" min="${min}" step="${step}" />
+        </div>
+        <input type="number" data-precio="${secIdx}:${itemIdx}" value="${it.precio}" min="0" step="0.01" />
+        <span class="item-sub">${fmt(sub)}</span>
+      </div>
+      ${hint}
+    </div>
+  `;
+}
+
+function bindItemEvents() {
+  $$('[data-remove]').forEach(b => b.addEventListener('click', () => {
+    const [si, ii] = b.dataset.remove.split(':').map(Number);
+    const sec = state.secciones[si];
+    if (!sec) return;
+    sec.items.splice(ii, 1);
+    save(); renderCotizacion();
+  }));
+
+  $$('[data-cant]').forEach(inp => inp.addEventListener('input', () => {
+    const [si, ii] = inp.dataset.cant.split(':').map(Number);
+    const sec = state.secciones[si];
+    if (!sec) return;
+    sec.items[ii].cantidad = inp.value === '' ? 0 : Number(inp.value);
+    save();
+    const item = inp.closest('.item');
+    const sub = (Number(sec.items[ii].cantidad) || 0) * (Number(sec.items[ii].precio) || 0);
+    if (item) item.querySelector('.item-sub').textContent = fmt(sub);
+    // Actualizar subtotal de sección y totales globales
+    const secBlock = inp.closest('.sec-block');
+    if (secBlock) {
+      const subSec = sec.items.reduce((a, x) => a + (Number(x.cantidad) || 0) * (Number(x.precio) || 0), 0);
+      const subEl = secBlock.querySelector('.sec-subtotal strong');
+      if (subEl) subEl.textContent = fmt(subSec);
+    }
+    updateTotales();
+  }));
+
+  $$('[data-precio]').forEach(inp => inp.addEventListener('input', () => {
+    const [si, ii] = inp.dataset.precio.split(':').map(Number);
+    const sec = state.secciones[si];
+    if (!sec) return;
+    sec.items[ii].precio = inp.value === '' ? 0 : Number(inp.value);
+    save();
+    const item = inp.closest('.item');
+    const sub = (Number(sec.items[ii].cantidad) || 0) * (Number(sec.items[ii].precio) || 0);
+    if (item) item.querySelector('.item-sub').textContent = fmt(sub);
+    const secBlock = inp.closest('.sec-block');
+    if (secBlock) {
+      const subSec = sec.items.reduce((a, x) => a + (Number(x.cantidad) || 0) * (Number(x.precio) || 0), 0);
+      const subEl = secBlock.querySelector('.sec-subtotal strong');
+      if (subEl) subEl.textContent = fmt(subSec);
+    }
+    updateTotales();
+  }));
+
+  $$('[data-name]').forEach(inp => inp.addEventListener('input', () => {
+    const [si, ii] = inp.dataset.name.split(':').map(Number);
+    const sec = state.secciones[si];
+    if (!sec) return;
+    sec.items[ii].nombre = inp.value;
+    save();
+  }));
+
   $$('[data-desc]').forEach(ta => {
     autoResize(ta);
     ta.addEventListener('input', () => {
-      const i = +ta.dataset.desc;
-      state.items[i].descripcion = ta.value;
+      const [si, ii] = ta.dataset.desc.split(':').map(Number);
+      const sec = state.secciones[si];
+      if (!sec) return;
+      sec.items[ii].descripcion = ta.value;
       save();
       autoResize(ta);
     });
   });
-
-  updateTotales();
 }
 
 function updateTotales() {
-  const sub = state.items.reduce((a, it) => a + (Number(it.cantidad) || 0) * (Number(it.precio) || 0), 0);
+  const sub = state.secciones.reduce((a, sec) => 
+    a + sec.items.reduce((b, it) => b + (Number(it.cantidad) || 0) * (Number(it.precio) || 0), 0)
+  , 0);
   const d = Math.min(100, Math.max(0, Number(state.descuento) || 0));
   const total = sub * (1 - d / 100);
   $('#subtotal').textContent = fmt(sub);
   $('#total').textContent = fmt(total);
 }
 
-/* ---------- Saved ---------- */
+/* ============================================================
+   SECCIONES · añadir, eliminar
+   ============================================================ */
+function addSection() {
+  const sec = emptySection();
+  state.secciones.push(sec);
+  activeSectionId = sec.id;
+  save(); renderCotizacion();
+  setTimeout(() => {
+    const inp = $(`[data-sec-title="${sec.id}"]`);
+    if (inp) inp.focus();
+  }, 50);
+}
+
+function removeSection(id) {
+  if (state.secciones.length === 1) {
+    // Última sección: no eliminar, solo vaciar
+    const sec = secById(id);
+    if (!sec) return;
+    if (sec.items.length === 0 && !sec.titulo) return;
+    Modal.open({
+      title: 'Vaciar sección',
+      body: 'Solo queda una sección. Se vaciará su contenido.',
+      confirmLabel: 'Vaciar',
+      danger: true,
+      onConfirm: () => {
+        sec.items = [];
+        sec.titulo = "";
+        save(); renderCotizacion();
+        toast('Sección vaciada', '', 'info');
+      }
+    });
+    return;
+  }
+  const sec = secById(id);
+  if (!sec) return;
+  Modal.open({
+    title: 'Eliminar sección',
+    body: `Se eliminará "${sec.titulo || 'Sección sin título'}" con sus ${sec.items.length} ítem${sec.items.length === 1 ? '' : 's'}.`,
+    confirmLabel: 'Eliminar',
+    danger: true,
+    onConfirm: () => {
+      state.secciones = state.secciones.filter(s => s.id !== id);
+      if (activeSectionId === id) activeSectionId = state.secciones[0].id;
+      save(); renderCotizacion();
+      toast('Sección eliminada', '', 'info');
+    }
+  });
+}
+
+/* ============================================================
+   ACCIONES sobre items
+   ============================================================ */
+function addServicioToActive(id) {
+  const s = servicio(id);
+  if (!s) return;
+  ensureActive();
+  const sec = secById(activeSectionId);
+  if (!sec) return;
+  sec.items.push({
+    sid: id,
+    nombre: s.nombre,
+    descripcion: s.desc || '',
+    cantidad: 1,
+    precio: precioBase(s),
+    unidad: s.unidad,
+    rango: s.precioMin != null ? [s.precioMin, s.precioMax] : null,
+  });
+  save(); renderCotizacion();
+}
+
+function addCustomToActive() {
+  ensureActive();
+  const sec = secById(activeSectionId);
+  if (!sec) return;
+  sec.items.push({
+    nombre: 'Línea personalizada',
+    descripcion: '',
+    cantidad: 1,
+    precio: 0,
+    unidad: 'unidad',
+    custom: true,
+  });
+  save(); renderCotizacion();
+}
+
+/* ============================================================
+   ACCIONES globales
+   ============================================================ */
+function nuevaCotizacion() {
+  const hasContent = state.secciones.some(s => s.items.length > 0 || s.titulo) || state.titulo || state.cliente;
+  if (!hasContent) { resetState(); return; }
+  Modal.open({
+    title: 'Empezar nueva cotización',
+    body: 'Se perderán los cambios actuales si no los has guardado antes.',
+    confirmLabel: 'Empezar nueva',
+    danger: true,
+    onConfirm: () => {
+      resetState();
+      toast('Cotización nueva', 'Lista para empezar.', 'success');
+    }
+  });
+}
+
+function vaciarCotizacion() {
+  const isEmpty = state.secciones.every(s => s.items.length === 0 && !s.titulo)
+    && !state.cliente && !state.titulo && !state.notas;
+  if (isEmpty) return;
+  Modal.open({
+    title: 'Vaciar cotización',
+    body: 'Se eliminarán todas las secciones, ítems, cliente y notas. Esta acción no se puede deshacer.',
+    confirmLabel: 'Vaciar',
+    danger: true,
+    onConfirm: () => {
+      resetState();
+      toast('Cotización vaciada', '', 'info');
+    }
+  });
+}
+
+function guardarCotizacion() {
+  const totalItems = state.secciones.reduce((a, s) => a + s.items.length, 0);
+  if (totalItems === 0) {
+    toast('Nada que guardar', 'Añade al menos un ítem.', 'danger');
+    return;
+  }
+  const def = (state.cliente || 'Cotización') + ' · ' + (state.titulo || state.fecha);
+  Modal.open({
+    title: 'Guardar cotización',
+    body: 'Ponle un nombre para identificarla después.',
+    input: true,
+    placeholder: 'Ej. Estudio Norte · Marzo 2026',
+    defaultValue: def,
+    confirmLabel: 'Guardar',
+    onConfirm: (nombre) => {
+      if (!nombre) { toast('Nombre requerido', '', 'danger'); return false; }
+      const snapshot = {
+        titulo: state.titulo,
+        cliente: state.cliente,
+        fecha: state.fecha,
+        descuento: state.descuento,
+        notas: state.notas,
+        secciones: JSON.parse(JSON.stringify(state.secciones)),
+      };
+      state.guardadas.unshift({ id: 'c' + Date.now(), nombre, fecha: state.fecha, snapshot });
+      save(); renderGuardadas();
+      toast('Cotización guardada', nombre, 'success');
+    }
+  });
+}
+
+function resetState() {
+  state.titulo = '';
+  state.cliente = '';
+  state.notas = '';
+  state.descuento = 0;
+  state.fecha = today();
+  state.secciones = [emptySection()];
+  activeSectionId = state.secciones[0].id;
+  save();
+  renderCotizacion();
+}
+
+/* ============================================================
+   RENDER — Guardadas
+   ============================================================ */
 function renderGuardadas() {
   const el = $('#savedList');
   $('#badgeSaved').textContent = state.guardadas.length;
@@ -978,6 +1432,10 @@ function renderGuardadas() {
     const g = state.guardadas.find(x => x.id === b.dataset.load);
     if (!g) return;
     Object.assign(state, JSON.parse(JSON.stringify(g.snapshot)));
+    if (!Array.isArray(state.secciones) || state.secciones.length === 0) {
+      state.secciones = [emptySection()];
+    }
+    activeSectionId = state.secciones[0].id;
     save(); renderCotizacion();
     toast('Cotización abierta', g.nombre, 'info');
   }));
@@ -988,142 +1446,70 @@ function renderGuardadas() {
 }
 
 /* ============================================================
-   ACCIONES
-   ============================================================ */
-function addServicio(id) {
-  const s = servicio(id);
-  if (!s) return;
-  state.items.push({
-    sid: id,
-    nombre: s.nombre,
-    descripcion: s.desc || '',
-    cantidad: 1,
-    precio: precioBase(s),
-    unidad: s.unidad,
-    rango: s.precioMin != null ? [s.precioMin, s.precioMax] : null,
-  });
-  save(); renderCotizacion();
-}
-
-function addCustom() {
-  state.items.push({
-    nombre: 'Línea personalizada',
-    descripcion: '',
-    cantidad: 1,
-    precio: 0,
-    unidad: 'unidad',
-    custom: true,
-  });
-  save(); renderCotizacion();
-}
-
-function removeItem(i) { state.items.splice(i, 1); save(); renderCotizacion(); }
-
-/* ---------- Acciones con modal ---------- */
-function nuevaCotizacion() {
-  if (state.items.length === 0) {
-    resetState();
-    return;
-  }
-  Modal.open({
-    title: 'Empezar nueva cotización',
-    body: 'Se perderán los cambios actuales si no los has guardado antes.',
-    confirmLabel: 'Empezar nueva',
-    cancelLabel: 'Cancelar',
-    danger: true,
-    onConfirm: () => {
-      resetState();
-      toast('Cotización nueva', 'Lista para empezar.', 'success');
-    }
-  });
-}
-
-function vaciarCotizacion() {
-  const isEmpty = state.items.length === 0 && !state.cliente && !state.proyecto && !state.notas;
-  if (isEmpty) return;
-  Modal.open({
-    title: 'Vaciar cotización',
-    body: 'Se eliminarán todos los ítems, el cliente y las notas. Esta acción no se puede deshacer.',
-    confirmLabel: 'Vaciar',
-    danger: true,
-    onConfirm: () => {
-      resetState();
-      toast('Cotización vaciada', '', 'info');
-    }
-  });
-}
-
-function guardarCotizacion() {
-  if (state.items.length === 0) {
-    toast('Nada que guardar', 'Añade al menos un ítem antes de guardar.', 'danger');
-    return;
-  }
-  const def = (state.cliente || 'Cotización') + ' · ' + (state.proyecto || state.fecha);
-  Modal.open({
-    title: 'Guardar cotización',
-    body: 'Ponle un nombre para identificarla después en la lista de guardadas.',
-    input: true,
-    placeholder: 'Ej. Estudio Norte · Marzo 2026',
-    defaultValue: def,
-    confirmLabel: 'Guardar',
-    onConfirm: (nombre) => {
-      if (!nombre) {
-        toast('Nombre requerido', 'Escribe un nombre para la cotización.', 'danger');
-        return false;
-      }
-      const snapshot = {
-        cliente: state.cliente, proyecto: state.proyecto, fecha: state.fecha,
-        descuento: state.descuento, notas: state.notas,
-        items: JSON.parse(JSON.stringify(state.items)),
-      };
-      state.guardadas.unshift({ id: 'c' + Date.now(), nombre, fecha: state.fecha, snapshot });
-      save(); renderGuardadas();
-      toast('Cotización guardada', nombre, 'success');
-    }
-  });
-}
-
-function resetState() {
-  state.items = [];
-  state.cliente = '';
-  state.proyecto = '';
-  state.notas = '';
-  state.descuento = 0;
-  state.fecha = today();
-  save();
-  renderCotizacion();
-}
-
-/* ============================================================
    PDF
    ============================================================ */
 function buildPrintArea() {
-  const sub = state.items.reduce((a, it) => a + (Number(it.cantidad) || 0) * (Number(it.precio) || 0), 0);
+  const sub = state.secciones.reduce((a, sec) =>
+    a + sec.items.reduce((b, it) => b + (Number(it.cantidad) || 0) * (Number(it.precio) || 0), 0)
+  , 0);
   const d = Math.min(100, Math.max(0, Number(state.descuento) || 0));
   const total = sub * (1 - d / 100);
 
-  const rows = state.items.map(it => {
-    const cant = Number(it.cantidad) || 0;
-    const p = Number(it.precio) || 0;
-    const lin = cant * p;
+  const multipleSections = state.secciones.length > 1;
 
-    let priceHTML;
-    if (p === 0) {
-      priceHTML = `<span class="incluido">Incluido</span>`;
-    } else if (cant > 1) {
-      priceHTML = `${fmt(lin)}<small>${cant} × ${fmt(p)}</small>`;
-    } else {
-      priceHTML = fmt(lin);
-    }
+  const sectionsHTML = state.secciones.map(sec => {
+    const rows = sec.items.map(it => {
+      const cant = Number(it.cantidad) || 0;
+      const p = Number(it.precio) || 0;
+      const lin = cant * p;
 
-    const desc = it.descripcion ? escapeHTML(it.descripcion) : '';
+      let priceHTML;
+      if (p === 0) {
+        priceHTML = `<span class="incluido">Incluido</span>`;
+      } else if (cant > 1) {
+        priceHTML = `${fmt(lin)}<small>${cant} × ${fmt(p)}</small>`;
+      } else {
+        priceHTML = fmt(lin);
+      }
+
+      const desc = it.descripcion ? escapeHTML(it.descripcion) : '';
+
+      return `
+        <tr>
+          <td class="c-name">${escapeHTML(it.nombre)}</td>
+          <td class="c-desc">${desc}</td>
+          <td class="c-price num">${priceHTML}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const secSubtotal = sec.items.reduce((a, it) => a + (Number(it.cantidad) || 0) * (Number(it.precio) || 0), 0);
+
+    const titleHTML = sec.titulo
+      ? `<h2 class="print-section-title">${escapeHTML(sec.titulo)}</h2>`
+      : '';
+
+    const subtotalHTML = multipleSections
+      ? `<div class="print-section-subtotal"><span class="lbl">Subtotal sección</span><span class="val">${fmt(secSubtotal)}</span></div>`
+      : '';
 
     return `
-      <tr>
-        <td class="c-name">${escapeHTML(it.nombre)}</td>
-        <td class="c-desc">${desc}</td>
-        <td class="c-price num">${priceHTML}</td>
-      </tr>
+      <div class="print-section">
+        ${titleHTML}
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Descripción</th>
+              <th class="num">Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || `<tr><td colspan="3" style="color:#999;padding:20px 0">Sin ítems.</td></tr>`}
+          </tbody>
+        </table>
+        ${subtotalHTML}
+      </div>
     `;
   }).join('');
 
@@ -1131,12 +1517,28 @@ function buildPrintArea() {
     ? `<div class="l"><span>Descuento (${d}%)</span><span>− ${fmt(sub - total)}</span></div>`
     : '';
 
+  const brandMark = `<img class="print-brand-logo" src="${LOGO_URL}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="print-brand-mark" style="display:none">Ae</div>`;
+
+  const metaRows = [];
+  if (state.pdfFields.cliente && state.cliente) {
+    metaRows.push(`<div class="row"><span class="k">Cliente</span><span class="v">${escapeHTML(state.cliente)}</span></div>`);
+  }
+  if (state.pdfFields.fecha && state.fecha) {
+    metaRows.push(`<div class="row"><span class="k">Fecha</span><span class="v">${formatDate(state.fecha)}</span></div>`);
+  }
+  if (state.pdfFields.validez && EMPRESA.validez) {
+    metaRows.push(`<div class="row"><span class="k">Validez</span><span class="v">${escapeHTML(EMPRESA.validez)}</span></div>`);
+  }
+  const metaHTML = metaRows.length > 0
+    ? `<div class="print-meta">${metaRows.join('')}</div>`
+    : '';
+
   $('#printArea').innerHTML = `
     <div class="print-doc">
 
       <header class="print-header">
         <div class="print-brand">
-          <div class="print-brand-mark">Ae</div>
+          ${brandMark}
           <div>
             <div class="print-brand-name">
               ${escapeHTML(EMPRESA.nombre)} <span>${escapeHTML(EMPRESA.tld)}</span>
@@ -1154,29 +1556,15 @@ function buildPrintArea() {
       <div class="print-title-block">
         <div class="print-eyebrow">Cotización</div>
         <h1 class="print-title">
-          ${escapeHTML(state.proyecto || 'Propuesta y plan de contenido')}
+          ${escapeHTML(state.titulo || 'Propuesta y plan de contenido')}
         </h1>
       </div>
 
-      <div class="print-meta">
-        <div class="row"><span class="k">Cliente</span><span class="v">${escapeHTML(state.cliente || '—')}</span></div>
-        <div class="row"><span class="k">Proyecto</span><span class="v">${escapeHTML(state.proyecto || '—')}</span></div>
-        <div class="row"><span class="k">Fecha</span><span class="v">${formatDate(state.fecha)}</span></div>
-        <div class="row"><span class="k">Validez</span><span class="v">${escapeHTML(EMPRESA.validez)}</span></div>
-      </div>
+      ${metaHTML}
 
-      <table class="print-table">
-        <thead>
-          <tr>
-            <th>Concepto</th>
-            <th>Descripción</th>
-            <th class="num">Precio</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows || `<tr><td colspan="3" style="color:#999;padding:20px 0">Sin ítems.</td></tr>`}
-        </tbody>
-      </table>
+      <div class="print-sections">
+        ${sectionsHTML}
+      </div>
 
       <div class="print-totals">
         <div class="l"><span>Subtotal</span><span>${fmt(sub)}</span></div>
@@ -1203,8 +1591,8 @@ function buildPrintArea() {
 /* ============================================================
    EVENTOS
    ============================================================ */
+$('#titulo').addEventListener('input', e => { state.titulo = e.target.value; save(); });
 $('#cliente').addEventListener('input', e => { state.cliente = e.target.value; save(); });
-$('#proyecto').addEventListener('input', e => { state.proyecto = e.target.value; save(); });
 $('#fecha').addEventListener('input', e => { state.fecha = e.target.value; save(); });
 $('#notas').addEventListener('input', e => { state.notas = e.target.value; save(); });
 $('#descuento').addEventListener('input', e => {
@@ -1212,7 +1600,8 @@ $('#descuento').addEventListener('input', e => {
   save(); updateTotales();
 });
 
-$('#btnCustom').addEventListener('click', addCustom);
+$('#btnAddSeccion').addEventListener('click', addSection);
+//$('#btnCustom').addEventListener('click', addCustomToActive);
 $('#btnNueva').addEventListener('click', nuevaCotizacion);
 $('#btnLimpiar').addEventListener('click', vaciarCotizacion);
 $('#btnGuardar').addEventListener('click', guardarCotizacion);
@@ -1226,13 +1615,19 @@ $('#btnExportar').addEventListener('click', () => {
 $('#btnImportar').addEventListener('click', () => {
   importJSON(data => {
     state = { ...state, ...data };
-    save(); renderCotizacion(); renderGuardadas();
+    if (!Array.isArray(state.secciones) || state.secciones.length === 0) {
+      state.secciones = [emptySection()];
+    }
+    if (!state.pdfFields) state.pdfFields = { cliente: true, fecha: true, validez: true };
+    activeSectionId = state.secciones[0].id;
+    save(); renderCotizacion(); renderGuardadas(); renderPdfFieldToggles();
     toast('Importado correctamente', '', 'success');
   });
 });
 
 $('#btnImprimir').addEventListener('click', () => {
-  if (state.items.length === 0) { toast('Nada que imprimir', 'Añade al menos un ítem.', 'danger'); return; }
+  const totalItems = state.secciones.reduce((a, s) => a + s.items.length, 0);
+  if (totalItems === 0) { toast('Nada que imprimir', 'Añade al menos un ítem.', 'danger'); return; }
   buildPrintArea();
   requestAnimationFrame(() => window.print());
 });
@@ -1255,9 +1650,11 @@ $('#btnImprimir').addEventListener('click', () => {
    ============================================================ */
 Modal.init();
 load();
+ensureActive();
 renderCatalogo();
 renderCotizacion();
 renderGuardadas();
+renderPdfFieldToggles();
 </script>
 
 </body>

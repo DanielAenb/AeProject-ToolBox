@@ -13,6 +13,7 @@
 
 <body>
 
+<!-- ============================================================ HEADER -->
 <header class="app-header">
   <a href="index.html" class="brand">
     <span class="brand-dot"></span>
@@ -44,11 +45,15 @@
   <div class="spacer"></div>
 
   <div class="actions">
-    <button class="btn btn-ghost btn-sm" id="btnNuevo" title="Nuevo video">
+    <button class="btn btn-ghost btn-sm" id="btnGuiones" title="Ver todos los guiones">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span class="label-hide">Guiones</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnNuevo" title="Nuevo guion">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       <span class="label-hide">Nuevo</span>
     </button>
-    <button class="btn btn-ghost btn-sm" id="btnGuardar" title="Guardar">
+    <button class="btn btn-ghost btn-sm" id="btnGuardar" title="Guardar ahora">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       <span class="label-hide">Guardar</span>
     </button>
@@ -56,7 +61,7 @@
       <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
       <span class="label-hide">Exportar</span>
     </button>
-    <button class="btn btn-ghost btn-sm" id="btnImportar" title="Importar JSON">
+    <button class="btn btn-ghost btn-sm" id="btnImportar" title="Importar JSON como guion nuevo">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
       <span class="label-hide">Importar</span>
     </button>
@@ -76,6 +81,7 @@
   </div>
 </header>
 
+<!-- ============================================================ MAIN -->
 <main class="guion-main">
 
   <!-- TAB 1 · GUION -->
@@ -173,7 +179,6 @@
       </aside>
 
       <div class="panel-col">
-        <!-- Panel de guion de referencia -->
         <div class="section" style="margin-bottom:16px">
           <div class="guion-ref" id="guionRef">
             <div class="guion-ref-head" data-guion-toggle>
@@ -191,14 +196,8 @@
 
         <div class="section">
           <div class="seq-summary">
-            <div class="stat">
-              <span class="v" id="statTomas">0</span>
-              <span class="k">tomas</span>
-            </div>
-            <div class="stat">
-              <span class="v" id="statDuracion">0s</span>
-              <span class="k">duración</span>
-            </div>
+            <div class="stat"><span class="v" id="statTomas">0</span><span class="k">tomas</span></div>
+            <div class="stat"><span class="v" id="statDuracion">0s</span><span class="k">duración</span></div>
             <span class="badge badge-dur" id="badgeDur">—</span>
             <div class="spacer" style="flex:1"></div>
             <button class="btn btn-secondary btn-sm" id="btnAutoAssign" title="Sugerir asignación">
@@ -236,11 +235,6 @@
         <div class="section">
           <div class="section-head">
             <span class="sh-title">Catálogo</span>
-            <div class="spacer"></div>
-            <button class="btn btn-secondary btn-sm" id="btnNewTrans">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-              Nueva transición
-            </button>
           </div>
           <div class="section-body">
             <div class="trans-grid-catalog" id="transCatalog"></div>
@@ -274,35 +268,19 @@
 
       <aside class="panel-side">
         <div class="section">
-          <div class="section-head">
-            <span class="sh-title">Resumen</span>
-          </div>
+          <div class="section-head"><span class="sh-title">Resumen</span></div>
           <div class="section-body">
             <div class="stats-grid">
-              <div class="stat-cell">
-                <span class="v" id="statHooksTotal">0</span>
-                <span class="k">Hooks</span>
-              </div>
-              <div class="stat-cell warn">
-                <span class="v" id="statHooksFav">0</span>
-                <span class="k">Favoritos</span>
-              </div>
-              <div class="stat-cell brand">
-                <span class="v" id="statHooksUsed">0</span>
-                <span class="k">Usados</span>
-              </div>
-              <div class="stat-cell">
-                <span class="v" id="statHooksCats">0</span>
-                <span class="k">Categorías</span>
-              </div>
+              <div class="stat-cell"><span class="v" id="statHooksTotal">0</span><span class="k">Hooks</span></div>
+              <div class="stat-cell warn"><span class="v" id="statHooksFav">0</span><span class="k">Favoritos</span></div>
+              <div class="stat-cell brand"><span class="v" id="statHooksUsed">0</span><span class="k">Usados</span></div>
+              <div class="stat-cell"><span class="v" id="statHooksCats">0</span><span class="k">Categorías</span></div>
             </div>
           </div>
         </div>
 
         <div class="section">
-          <div class="section-head">
-            <span class="sh-title">Categorías</span>
-          </div>
+          <div class="section-head"><span class="sh-title">Categorías</span></div>
           <div class="section-body">
             <div class="cat-list" id="hookCatList"></div>
           </div>
@@ -315,6 +293,26 @@
 
 <!-- ============================================================ MODALES -->
 
+<!-- Guiones (lista) -->
+<div class="modal" id="guionesModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel guiones-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Guiones</h3>
+      <button class="btn btn-primary btn-sm" id="btnGuionesNuevo">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Nuevo
+      </button>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Todos tus guiones están sincronizados entre dispositivos.</p>
+    <div class="guiones-list" id="guionesList"></div>
+  </div>
+</div>
+
+<!-- Confirm -->
 <div class="modal" id="confirmModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel">
@@ -332,6 +330,7 @@
   </div>
 </div>
 
+<!-- Save (no usado ahora, se mantiene por si acaso) -->
 <div class="modal" id="saveModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel">
@@ -341,7 +340,7 @@
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <p class="modal-body" id="saveDesc">Ponle un nombre para identificarlo después.</p>
+    <p class="modal-body" id="saveDesc"></p>
     <div class="modal-input">
       <input class="input" id="saveName" placeholder="Nombre…" />
     </div>
@@ -352,6 +351,7 @@
   </div>
 </div>
 
+<!-- Trans picker -->
 <div class="modal" id="transPicker" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel trans-panel">
@@ -366,6 +366,7 @@
   </div>
 </div>
 
+<!-- Assign -->
 <div class="modal" id="assignModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel assign-panel">
@@ -384,6 +385,7 @@
   </div>
 </div>
 
+<!-- Hook edit -->
 <div class="modal" id="hookEditModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel edit-panel">
@@ -419,6 +421,7 @@
   </div>
 </div>
 
+<!-- Hook use -->
 <div class="modal" id="hookUseModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel use-panel">
@@ -438,39 +441,7 @@
   </div>
 </div>
 
-<!-- Modal editar transición -->
-<div class="modal" id="transEditModal" role="dialog" aria-modal="true">
-  <div class="modal-backdrop" data-close></div>
-  <div class="modal-panel">
-    <div class="modal-head">
-      <h3 class="modal-title" id="transEditTitle">Nueva transición</h3>
-      <button class="modal-x" data-close aria-label="Cerrar">
-        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <p class="modal-body">Añade una transición que no esté en el catálogo.</p>
-    <div class="edit-form">
-      <div class="field">
-        <label class="field-label">Nombre</label>
-        <input class="input" id="transEditName" placeholder="Ej. Match cut lateral" />
-      </div>
-      <div class="field">
-        <label class="field-label">Cuándo usarla</label>
-        <textarea class="edit-textarea" id="transEditDesc" placeholder="Ej. Cuando dos tomas comparten movimiento…" style="min-height:64px"></textarea>
-      </div>
-      <div class="field">
-        <label class="field-label">Video de ejemplo (opcional)</label>
-        <input class="input" id="transEditVideo" placeholder="clips/xyz.mp4 o https://www.youtube.com/embed/ID" />
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" data-close>Cancelar</button>
-      <button class="btn btn-primary" id="transEditSave">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal overlay (B-roll) -->
+<!-- Overlay B-roll -->
 <div class="modal" id="overlayModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-panel assign-panel">
@@ -485,6 +456,35 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" data-close>Cancelar</button>
       <button class="btn btn-ghost" id="overlayClear" style="color:var(--danger)">Quitar overlay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Storyboard export -->
+<div class="modal" id="sbExportModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel" style="width:min(480px,calc(100% - 32px))">
+    <div class="modal-head">
+      <h3 class="modal-title">Exportar storyboard</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body">Elige el formato. La imagen incluye el filmstrip completo, los datos de cada toma, la transición entre ellas y el guion al final.</p>
+    <div class="sb-export-grid">
+      <button class="sb-export-opt" id="sbExportPNG">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <div class="sbo-name">Imagen PNG</div>
+        <div class="sbo-desc">Descarga una imagen con toda la línea de tiempo.</div>
+      </button>
+      <button class="sb-export-opt" id="sbExportPDF">
+        <svg viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <div class="sbo-name">PDF / Imprimir</div>
+        <div class="sbo-desc">Abre el diálogo de impresión. Elige "Guardar como PDF".</div>
+      </button>
+    </div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn btn-ghost" data-close>Cerrar</button>
     </div>
   </div>
 </div>
@@ -510,7 +510,7 @@
   </div>
 </aside>
 
-<!-- Play -->
+<!-- Play mode -->
 <div id="play">
   <div class="play-top">
     <span class="play-title" id="playTitle">—</span>
@@ -541,38 +541,74 @@
   <div class="play-hint">← → navegar · Esc salir · Inicio/Fin saltar</div>
 </div>
 
-<!-- Modal: exportar storyboard -->
-<div class="modal" id="sbExportModal" role="dialog" aria-modal="true">
+<!-- Modal: añadir sección -->
+<div class="modal" id="addSecModal" role="dialog" aria-modal="true">
   <div class="modal-backdrop" data-close></div>
-  <div class="modal-panel" style="width:min(480px,calc(100% - 32px))">
+  <div class="modal-panel assign-panel">
     <div class="modal-head">
-      <h3 class="modal-title">Exportar storyboard</h3>
+      <h3 class="modal-title">Añadir sección</h3>
       <button class="modal-x" data-close aria-label="Cerrar">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <p class="modal-body">Elige el formato. La imagen incluye el filmstrip completo, los datos de cada toma, la transición entre ellas y el guion al final.</p>
-    <div class="sb-export-grid">
-      <button class="sb-export-opt" id="sbExportPNG">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <div class="sbo-name">Imagen PNG</div>
-        <div class="sbo-desc">Descarga una imagen con toda la línea de tiempo.</div>
-      </button>
-      <button class="sb-export-opt" id="sbExportPDF">
-        <svg viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        <div class="sbo-name">PDF / Imprimir</div>
-        <div class="sbo-desc">Abre el diálogo de impresión. Elige "Guardar como PDF".</div>
+    <p class="modal-body">Elige el tipo de sección. Puedes editarla después.</p>
+    <div class="assign-list" id="addSecList"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: editar sección -->
+<div class="modal" id="editSecModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel edit-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="editSecTitle">Editar sección</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="modal-actions" style="margin-top:16px">
-      <button class="btn btn-ghost" data-close>Cerrar</button>
+    <p class="modal-body">Ajusta el nombre, la ayuda y el peso dentro del video.</p>
+    <div class="edit-form">
+      <div class="field">
+        <label class="field-label">Nombre</label>
+        <input class="input" id="editSecLabel" placeholder="Ej. Introducción" />
+      </div>
+      <div class="field">
+        <label class="field-label">Ayuda</label>
+        <textarea class="edit-textarea" id="editSecHint" placeholder="Qué va aquí…" style="min-height:60px"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Tipo (color)</label>
+        <div class="chips-row" id="editSecTipo"></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Peso (cuánto del video)</label>
+        <div class="range-row">
+          <input type="range" id="editSecWeight" min="0.05" max="0.8" step="0.05" />
+          <span class="range-value" id="editSecWeightValue">0.20</span>
+        </div>
+        <span class="field-hint">Determina cuántas palabras te toca escribir en esta sección.</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="editSecSave">Guardar</button>
     </div>
   </div>
 </div>
 
 <div class="toast-host" id="toastHost"></div>
 
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <span class="spinner"></span>
+</div>
+
 <script src="assets/utils.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/cloud.js"></script>
 <script src="assets/guion-data.js"></script>
 <script src="assets/guion.js"></script>
 

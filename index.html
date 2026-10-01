@@ -445,21 +445,9 @@
 </main>
 
 <script src="assets/utils.js"></script>
-<script src="assets/firebase.js"></script>
-<script src="assets/cloud.js"></script>
-<script src="assets/guion-data.js"></script>
-<script src="assets/guion.js"></script>
 <script>
 /* ============================================================
    HERRAMIENTAS
-
-   status: "ready"  → tarjeta clickable, va al href
-   status: "soon"   → tarjeta atenuada, sin href
-   href:   solo para las "ready"
-
-   Para añadir una nueva cuando la construyas:
-   1) Cambia su status a "ready"
-   2) Añade el href (ej. "calendario.html")
    ============================================================ */
 
 const ICONS = {
@@ -477,13 +465,12 @@ const ICONS = {
   mail:      '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',
   message:   '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
   activity:  '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
-  type: '<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+  type:      '<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
   layout:    '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>',
   monitor:   '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
 };
 
 const TOOLS = [
-  /* ---------- PRODUCCIÓN ---------- */
   { id:"guion", cat:"Producción", nombre:"Guion",
     desc:"Guion, tomas, transiciones y hooks en un solo lugar. Cobertura visual del texto, asignación de tomas por sección, storyboard exportable.",
     icon:"camera", status:"ready", href:"guion.html" },
@@ -496,28 +483,26 @@ const TOOLS = [
     desc:"Sube referencias, extrae paletas dominantes y arma sistemas cromáticos con roles y contraste WCAG.",
     icon:"palette", status:"ready", href:"moodboard.html" },
 
-  /* ---------- COMERCIAL ---------- */
   { id:"tarifario", cat:"Comercial", nombre:"Tarifario y cotizador",
     desc:"Catálogo de servicios, cotización en vivo y PDF editorial con tu marca.",
     icon:"tag", status:"ready", href:"tarifario.html" },
 
-  /* ---------- PORTAFOLIO ---------- */
   { id:"preview-redes", cat:"Portafolio", nombre:"Vista previa de redes",
     desc:"Mockup de feed para Instagram, TikTok y Facebook con tus piezas reales.",
     icon:"monitor", status:"ready", href:"preview.html" },
+
+    { id:"referencias", cat:"Producción", nombre:"Referencias",
+  desc:"Biblioteca de fichas por rubro: capturas, nombre, Instagram y copy para consultar rápido y mostrar ejemplos.",
+  icon:"bookmark", status:"ready", href:"referencias.html" },
+  
 ];
 
-/* ============================================================
-   RENDER
-   ============================================================ */
 function render() {
   const q = ($('#searchInput').value || '').toLowerCase().trim();
 
-  // Agrupar por categoría
   const groups = {};
   TOOLS.forEach(t => { (groups[t.cat] = groups[t.cat] || []).push(t); });
 
-  // Orden de categorías
   const catOrder = ["Producción", "Comercial", "Clientes", "Portafolio"];
   let html = "";
   let totalShown = 0;
@@ -544,7 +529,6 @@ function render() {
     `;
   });
 
-  // Categorías que pudieran no estar en catOrder
   Object.keys(groups).forEach(cat => {
     if (catOrder.includes(cat)) return;
     const list = groups[cat].filter(t => {
@@ -575,7 +559,6 @@ function render() {
     $('#hubEmpty').hidden = true;
   }
 
-  // Stats generales (siempre sobre el total, no del filtro)
   const ready = TOOLS.filter(t => t.status === "ready").length;
   const soon = TOOLS.filter(t => t.status === "soon").length;
   $('#statReady').textContent = ready;
@@ -624,38 +607,40 @@ function toolCardHTML(t) {
 /* ============================================================
    EVENTOS
    ============================================================ */
-$('#searchInput').addEventListener('input', debounce(render, 120));
+const searchInput = $('#searchInput');
+if (searchInput) searchInput.addEventListener('input', debounce(render, 120));
 
-// Keyboard shortcut: "/" enfoca la búsqueda
 document.addEventListener('keydown', e => {
-  if (e.key === '/' && document.activeElement !== $('#searchInput')) {
+  const si = $('#searchInput');
+  if (!si) return;
+  if (e.key === '/' && document.activeElement !== si) {
     e.preventDefault();
-    $('#searchInput').focus();
+    si.focus();
   }
-  if (e.key === 'Escape' && document.activeElement === $('#searchInput')) {
-    $('#searchInput').value = '';
+  if (e.key === 'Escape' && document.activeElement === si) {
+    si.value = '';
     render();
-    $('#searchInput').blur();
+    si.blur();
   }
 });
 
-/* Theme toggle */
 (function () {
   const KEY = 'ae-theme';
   const saved = localStorage.getItem(KEY);
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
-  $('#themeToggle').addEventListener('click', () => {
-    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem(KEY, next);
-  });
+  const toggle = $('#themeToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(KEY, next);
+    });
+  }
 })();
 
-/* ============================================================
-   INIT
-   ============================================================ */
-$('#footerYear').textContent = new Date().getFullYear();
+const footerYear = $('#footerYear');
+if (footerYear) footerYear.textContent = new Date().getFullYear();
 render();
 </script>
 
