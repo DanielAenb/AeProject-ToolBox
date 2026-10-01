@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Producción · Ae Project .studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/produccion.css" />
+</head>
+
+<body>
+
+<header class="app-header">
+  <a href="index.html" class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Ae Project</span>
+    <span class="brand-tld">.studio</span>
+  </a>
+  <span class="tool-name">Producción</span>
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <button class="btn btn-ghost btn-sm" id="btnExportar">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <span class="label-hide">Exportar</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnImportar">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
+      <span class="label-hide">Importar</span>
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnAjustes" title="Ajustes">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="label-hide">Ajustes</span>
+    </button>
+    <button class="btn btn-primary btn-sm" id="btnRegistrar">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Registrar ítem
+    </button>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="prod-main">
+
+  <!-- Dashboard -->
+  <section class="dash">
+    <div class="dash-card" data-scope="diario">
+      <div class="dc-head">
+        <span class="dc-label">Día</span>
+        <span class="dc-date" id="dcDateToday">—</span>
+      </div>
+      <div class="dc-value">
+        <span class="dc-num" id="dcDaily">0</span>
+        <span class="dc-sep">/</span>
+        <span class="dc-max" id="dcDailyMax">5</span>
+        <span class="dc-unit">UC</span>
+      </div>
+      <div class="dc-bar"><div class="dc-fill" id="dcDailyFill"></div></div>
+      <div class="dc-foot" id="dcDailyFoot">—</div>
+    </div>
+
+    <div class="dash-card" data-scope="semanal">
+      <div class="dc-head">
+        <span class="dc-label">Semana</span>
+        <span class="dc-date" id="dcWeekRange">—</span>
+      </div>
+      <div class="dc-value">
+        <span class="dc-num" id="dcWeekly">0</span>
+        <span class="dc-sep">/</span>
+        <span class="dc-max" id="dcWeeklyMax">25</span>
+        <span class="dc-unit">UC</span>
+      </div>
+      <div class="dc-bar"><div class="dc-fill" id="dcWeeklyFill"></div></div>
+      <div class="dc-foot" id="dcWeeklyFoot">—</div>
+    </div>
+
+    <div class="dash-card" data-scope="mensual">
+      <div class="dc-head">
+        <span class="dc-label">Mes</span>
+        <span class="dc-date" id="dcMonthRange">—</span>
+      </div>
+      <div class="dc-value">
+        <span class="dc-num" id="dcMonthly">0</span>
+        <span class="dc-sep">/</span>
+        <span class="dc-max" id="dcMonthlyMax">100</span>
+        <span class="dc-unit">UC</span>
+      </div>
+      <div class="dc-bar"><div class="dc-fill" id="dcMonthlyFill"></div></div>
+      <div class="dc-foot" id="dcMonthlyFoot">—</div>
+    </div>
+  </section>
+
+  <!-- Filtros -->
+  <section class="filters">
+    <div class="chips-row" id="catFilters"></div>
+    <div class="spacer"></div>
+    <div class="input-wrap" style="max-width:260px">
+      <svg class="icon input-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="input with-icon" id="searchInput" placeholder="Buscar trabajo, cliente…" />
+    </div>
+  </section>
+
+  <!-- Lista -->
+  <section class="items-section">
+    <div id="itemsList"></div>
+    <div id="itemsEmpty" hidden>
+      <div class="empty-msg">
+        Aún no has registrado nada.<br>
+        Pulsa <strong>Registrar ítem</strong> para empezar.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal: registrar -->
+<div class="modal" id="itemModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel item-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="itemModalTitle">Registrar ítem</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="item-form">
+      <div class="field">
+        <label class="field-label">Tipo</label>
+        <div class="tipo-grid" id="tipoGrid"></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field" style="flex:1">
+          <label class="field-label">Nombre del trabajo</label>
+          <input class="input" id="itemTitulo" placeholder="Ej. Reel tutorial gym" autocomplete="off" />
+        </div>
+        <div class="field" style="flex:0 0 120px">
+          <label class="field-label">Fecha</label>
+          <input class="input" type="date" id="itemFecha" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field" style="flex:1">
+          <label class="field-label">Cliente <span class="field-hint-inline">(opcional)</span></label>
+          <input class="input" id="itemCliente" list="clientesList" placeholder="Ej. Gym X" autocomplete="off" />
+          <datalist id="clientesList"></datalist>
+        </div>
+        <div class="field" style="flex:0 0 100px">
+          <label class="field-label">Cantidad</label>
+          <input class="input" type="number" id="itemCantidad" min="1" step="1" value="1" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Link <span class="field-hint-inline">(opcional)</span></label>
+        <input class="input" id="itemLink" placeholder="https://…" autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label class="field-label">Nota <span class="field-hint-inline">(opcional)</span></label>
+        <textarea class="textarea" id="itemNota" rows="2" style="min-height:56px" placeholder="Ej. Entregado fuera de plazo por cortes de luz"></textarea>
+      </div>
+
+      <div class="item-preview" id="itemPreview">
+        <span class="ip-label">Impacto en la cuota:</span>
+        <span class="ip-value" id="itemPreviewValue">1.0 UC</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="itemDelete" style="margin-right:auto;display:none">Eliminar</button>
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="itemSave">Guardar (Enter)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: ajustes -->
+<div class="modal" id="ajustesModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel ajustes-panel">
+    <div class="modal-head">
+      <h3 class="modal-title">Ajustes</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="ajustes-body">
+      <div class="ajustes-block">
+        <div class="ab-title">Límites</div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Diario (UC)</label>
+            <input class="input" type="number" id="limDiario" step="0.5" min="0" />
+          </div>
+          <div class="field">
+            <label class="field-label">Semanal (UC)</label>
+            <input class="input" type="number" id="limSemanal" step="1" min="0" />
+          </div>
+          <div class="field">
+            <label class="field-label">Mensual (UC)</label>
+            <input class="input" type="number" id="limMensual" step="1" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="ajustes-block">
+        <div class="ab-title">Días laborables</div>
+        <div class="dias-row" id="diasRow"></div>
+        <p class="field-hint">Solo afecta al cálculo de la semana (para saber cuántos días hábiles quedan).</p>
+      </div>
+
+      <div class="ajustes-block">
+        <div class="ab-title">Pesos por tipo (UC)</div>
+        <div class="pesos-list" id="pesosList"></div>
+      </div>
+
+      <div class="ajustes-block">
+        <div class="ab-title">Datos</div>
+        <div class="ajustes-actions">
+          <button class="btn btn-secondary btn-sm" id="btnResetPesos">Restaurar pesos por defecto</button>
+          <button class="btn btn-secondary btn-sm" id="btnResetLimites">Restaurar límites por defecto</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="ajustesSave">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 class="modal-title" id="confirmTitle">Confirmar</h3>
+      <button class="modal-x" data-close aria-label="Cerrar">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-danger" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-host" id="toastHost"></div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <span class="spinner"></span>
+</div>
+
+<script src="assets/utils.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/cloud.js"></script>
+<script src="assets/produccion-data.js"></script>
+<script src="assets/produccion.js"></script>
+
+</body>
+</html>
