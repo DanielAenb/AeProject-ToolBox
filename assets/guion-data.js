@@ -1,80 +1,91 @@
 /* ============================================================
    GUION · DATOS ESTÁTICOS
    assets/guion-data.js
-
-   Este archivo contiene los datos que editas tú:
-   - PLANTILLAS: estructuras de guion
-   - SHOTS: biblioteca de tomas
-   - TRANSICIONES: catálogo de transiciones
-   - HOOKS_DEFAULT: hooks de fábrica
-   - MARCADORES: etapas del relato
-   - DURACIONES: objetivos de duración
-   - CATEGORIAS_HOOKS: categorías de hooks
    ============================================================ */
 
+/* ---------- Tipos de sección ---------- */
+const TIPOS_SECCION = [
+  { id: "hook",       label: "Hook",       hint: "3 segundos. Genera curiosidad o promete algo.",     weight: 0.10 },
+  { id: "contexto",   label: "Contexto",   hint: "Por qué importa o para quién es.",                   weight: 0.15 },
+  { id: "desarrollo", label: "Desarrollo", hint: "El contenido central, en bloques.",                 weight: 0.40 },
+  { id: "pasos",      label: "Pasos",      hint: "El contenido, en pasos claros y ordenados.",        weight: 0.55 },
+  { id: "dolor",      label: "Dolor",      hint: "El problema del cliente, en sus palabras.",         weight: 0.20 },
+  { id: "solucion",   label: "Solución",   hint: "Cómo tu producto o servicio lo resuelve.",          weight: 0.35 },
+  { id: "prueba",     label: "Prueba",     hint: "Un dato, un testimonio, un resultado.",              weight: 0.20 },
+  { id: "conflicto",  label: "Conflicto",  hint: "El problema o la tensión.",                          weight: 0.30 },
+  { id: "resolucion", label: "Resolución", hint: "Cómo se resolvió o qué aprendiste.",                 weight: 0.30 },
+  { id: "cierre",     label: "Cierre",     hint: "Recapitula o refuerza la idea principal.",           weight: 0.10 },
+  { id: "cta",        label: "CTA",        hint: "Qué quieres que haga el espectador.",                weight: 0.10 },
+  { id: "proceso",    label: "Proceso",    hint: "El detrás de cámaras, sin filtros.",                 weight: 0.50 },
+  { id: "punto",      label: "Punto",      hint: "Un punto de una lista.",                             weight: 0.20 },
+  { id: "custom",     label: "Sección",    hint: "Sección personalizada.",                             weight: 0.20 },
+];
+
+/* ---------- Plantillas (estructuras) ---------- */
 const PLANTILLAS = [
   {
     id: "tutorial",
     nombre: "Tutorial",
     desc: "Enseñar algo paso a paso",
-    secciones: [
-      { id: "hook",     label: "Hook",     hint: "3 segundos. Genera curiosidad o promete algo.", weight: 0.10 },
-      { id: "contexto", label: "Contexto", hint: "Por qué importa o para quién es.",               weight: 0.15 },
-      { id: "pasos",    label: "Pasos",    hint: "El contenido, en pasos claros y ordenados.",      weight: 0.55 },
-      { id: "cierre",   label: "Cierre",   hint: "Recapitula o refuerza la idea principal.",        weight: 0.10 },
-      { id: "cta",      label: "CTA",      hint: "Qué quieres que haga el espectador.",             weight: 0.10 },
+    estructura: [
+      { tipo: "hook",     weight: 0.10 },
+      { tipo: "contexto", weight: 0.15 },
+      { tipo: "pasos",    weight: 0.55 },
+      { tipo: "cierre",   weight: 0.10 },
+      { tipo: "cta",      weight: 0.10 },
     ],
   },
   {
     id: "storytelling",
     nombre: "Storytelling",
     desc: "Contar una historia personal",
-    secciones: [
-      { id: "hook",       label: "Hook",       hint: "Abre una escena o frase que intrigue.",       weight: 0.10 },
-      { id: "contexto",   label: "Contexto",   hint: "Dónde, cuándo, quién.",                        weight: 0.15 },
-      { id: "conflicto",  label: "Conflicto",  hint: "El problema o la tensión.",                    weight: 0.30 },
-      { id: "resolucion", label: "Resolución", hint: "Cómo se resolvió o qué aprendiste.",           weight: 0.30 },
-      { id: "cta",        label: "CTA",        hint: "Conecta con el espectador.",                   weight: 0.15 },
+    estructura: [
+      { tipo: "hook",       weight: 0.10 },
+      { tipo: "contexto",   weight: 0.15 },
+      { tipo: "conflicto",  weight: 0.30 },
+      { tipo: "resolucion", weight: 0.30 },
+      { tipo: "cta",        weight: 0.15 },
     ],
   },
   {
     id: "venta",
     nombre: "Venta",
     desc: "Presentar un producto o servicio",
-    secciones: [
-      { id: "hook",     label: "Hook",     hint: "Captura con el dolor o el deseo.",            weight: 0.10 },
-      { id: "dolor",    label: "Dolor",    hint: "El problema del cliente, en sus palabras.",   weight: 0.20 },
-      { id: "solucion", label: "Solución", hint: "Cómo tu producto o servicio lo resuelve.",    weight: 0.35 },
-      { id: "prueba",   label: "Prueba",   hint: "Un dato, un testimonio, un resultado.",       weight: 0.20 },
-      { id: "cta",      label: "CTA",      hint: "Acción concreta. Una sola.",                  weight: 0.15 },
+    estructura: [
+      { tipo: "hook",     weight: 0.10 },
+      { tipo: "dolor",    weight: 0.20 },
+      { tipo: "solucion", weight: 0.35 },
+      { tipo: "prueba",   weight: 0.20 },
+      { tipo: "cta",      weight: 0.15 },
     ],
   },
   {
     id: "bts",
     nombre: "Behind the scenes",
     desc: "Mostrar el detrás de cámaras",
-    secciones: [
-      { id: "hook",     label: "Hook",     hint: "Algo que sorprenda del proceso.", weight: 0.10 },
-      { id: "contexto", label: "Contexto", hint: "Qué se está haciendo.",            weight: 0.20 },
-      { id: "proceso",  label: "Proceso",  hint: "El detrás de cámaras, sin filtros.", weight: 0.50 },
-      { id: "cta",      label: "CTA",      hint: "Invita a seguir o comentar.",       weight: 0.20 },
+    estructura: [
+      { tipo: "hook",     weight: 0.10 },
+      { tipo: "contexto", weight: 0.20 },
+      { tipo: "proceso",  weight: 0.50 },
+      { tipo: "cta",      weight: 0.20 },
     ],
   },
   {
     id: "listicle",
     nombre: "Lista",
     desc: "Puntos rápidos sobre un tema",
-    secciones: [
-      { id: "hook",   label: "Hook",    hint: "Promete una lista con valor claro.", weight: 0.10 },
-      { id: "punto1", label: "Punto 1", hint: "El más fuerte o el más obvio.",      weight: 0.20 },
-      { id: "punto2", label: "Punto 2", hint: "Sube la intensidad.",                weight: 0.20 },
-      { id: "punto3", label: "Punto 3", hint: "El que más sorprende.",               weight: 0.20 },
-      { id: "punto4", label: "Punto 4", hint: "Cierre conceptual.",                  weight: 0.20 },
-      { id: "cta",    label: "CTA",     hint: "Siguiente paso.",                     weight: 0.10 },
+    estructura: [
+      { tipo: "hook",   weight: 0.10 },
+      { tipo: "punto",  weight: 0.20 },
+      { tipo: "punto",  weight: 0.20 },
+      { tipo: "punto",  weight: 0.20 },
+      { tipo: "punto",  weight: 0.20 },
+      { tipo: "cta",    weight: 0.10 },
     ],
   },
 ];
 
+/* ---------- Marcadores ---------- */
 const MARCADORES = [
   { id: "hook",       label: "Hook" },
   { id: "contexto",   label: "Contexto" },
@@ -83,6 +94,7 @@ const MARCADORES = [
   { id: "cierre",     label: "Cierre" },
 ];
 
+/* ---------- Duraciones objetivo ---------- */
 const DURACIONES = [
   { s: 15,  label: "15s" },
   { s: 30,  label: "30s" },
@@ -92,6 +104,7 @@ const DURACIONES = [
   { s: 120, label: "2m"  },
 ];
 
+/* ---------- Categorías de hooks ---------- */
 const CATEGORIAS_HOOKS = [
   { id: "curiosidad",   label: "Curiosidad" },
   { id: "controversia", label: "Controversia" },
@@ -105,7 +118,7 @@ const CATEGORIAS_HOOKS = [
   { id: "autoridad",    label: "Autoridad" },
 ];
 
-/* Ritmo de habla para estimar duración: 150 palabras por minuto */
+/* Ritmo de habla estimado: 150 palabras por minuto */
 const PALABRAS_POR_SEGUNDO = 2.5;
 
 /* ============================================================
@@ -138,9 +151,7 @@ const SHOTS = [
   { id:"inserto",     cat:"Recurso",    nombre:"Inserto",           descripcion:"Toma breve que apoya la acción.",             cuando_usar:"Ritmo, transición, detalle entre tomas largas.",      video:"", duracion:2,  tags:["corto"] },
 ];
 
-/* ============================================================
-   TRANSICIONES
-   ============================================================ */
+/* ---------- Transiciones ---------- */
 const TRANSICIONES = [
   { id:"cut",        label:"Corte",           desc:"Cambio directo sin efecto. El más común.",       icon:'<line x1="12" y1="4" x2="12" y2="20"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/>', video:"" },
   { id:"fade",       label:"Fundido",         desc:"Aparece desde negro. Ritmo pausado, cierre de escena.", icon:'<rect x="3" y="3" width="18" height="18" rx="2" opacity="0.2"/><rect x="7" y="7" width="10" height="10" rx="1"/>', video:"" },
@@ -156,9 +167,7 @@ const TRANSICIONES = [
   { id:"spin",       label:"Spin",            desc:"Rotación rápida. Dinamismo, cambio de nivel o energía.", icon:'<path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/>', video:"" },
 ];
 
-/* ============================================================
-   HOOKS DE FÁBRICA
-   ============================================================ */
+/* ---------- Hooks de fábrica ---------- */
 const HOOKS_DEFAULT = [
   { id:"h001", cat:"curiosidad",   texto:"El 90% de las marcas comete este error con [tema] sin darse cuenta.", fav:false, uses:0 },
   { id:"h002", cat:"curiosidad",   texto:"Nadie habla de esto, pero cambia por completo cómo ves [tema].", fav:false, uses:0 },

@@ -1,21 +1,6 @@
 /* ============================================================
    FIREBASE · Inicialización y Auth
    assets/firebase.js
-
-   Carga Firebase por CDN desde un script clásico (no module).
-   Cuando termina, expone window.FB con:
-
-   FB.ready       → Promise que resuelve cuando Firebase está listo
-   FB.db          → Firestore
-   FB.auth        → Auth
-   FB.user        → usuario actual (o null)
-   FB.onUser(cb)  → suscribirse a cambios de auth
-   FB.loginGoogle() → vincula la sesión anónima a Google
-   FB.logout()    → cierra sesión
-
-   Si Firebase falla (sin internet, CDN caído, proyecto mal config),
-   FB.ready resuelve null y todo el taller sigue funcionando con
-   localStorage como respaldo.
    ============================================================ */
 
 (function () {
@@ -75,24 +60,28 @@
 
       let resolved = false;
 
-      authMod.onAuthStateChanged(auth, async (user) => {
+      authMod.onAuthStateChanged(auth, (user) => {
         if (user) {
           FB.user = user;
           FB._listeners.forEach(cb => { try { cb(user); } catch {} });
           if (!resolved) { resolved = true; resolveReady(FB); }
-        } else {
-          // Sin sesión → entra como anónimo
-          try {
-            await authMod.signInAnonymously(auth);
-            // Esto dispara onAuthStateChanged de nuevo con el user
-          } catch (err) {
-            console.warn("[FB] No se pudo iniciar sesión anónima:", err);
-            if (!resolved) { resolved = true; resolveReady(null); }
-          }
         }
       });
 
-      // Login con Google (vincula la sesión anónima actual)
+      // Clave: esperar a que Firebase restaure la sesión persistida
+      await auth.authStateReady();
+
+      // Solo crear anónimo si realmente no hay sesión
+      if (!auth.currentUser) {
+        try {
+          await authMod.signInAnonymously(auth);
+        } catch (err) {
+          console.warn("[FB] No se pudo crear sesión anónima:", err);
+          if (!resolved) { resolved = true; resolveReady(null); }
+        }
+      }
+
+      // Login con Google (para sincronizar entre dispositivos)
       FB.loginGoogle = async () => {
         const provider = new authMod.GoogleAuthProvider();
         const cur = auth.currentUser;
@@ -102,7 +91,6 @@
           } catch (e) {
             if (e.code === "auth/credential-already-in-use" ||
                 e.code === "auth/email-already-in-use") {
-              // La cuenta ya existe → signIn normal (cambia de uid)
               await authMod.signInWithPopup(auth, provider);
             } else {
               throw e;
@@ -113,16 +101,15 @@
         }
       };
 
-      // Logout → vuelve a sesión anónima
       FB.logout = async () => {
         await authMod.signOut(auth);
         await authMod.signInAnonymously(auth);
       };
 
-      // Timeout de seguridad: si en 6s no pasó nada, resolvemos null
+      // Timeout de seguridad: si en 8s no pasó nada, resolvemos null
       setTimeout(() => {
         if (!resolved) { resolved = true; resolveReady(null); }
-      }, 6000);
+      }, 8000);
 
     } catch (e) {
       console.warn("[FB] Firebase no disponible. Modo local activado.", e);

@@ -642,6 +642,48 @@
 
 .empty-hint { font-size: 12.5px; color: var(--text-subtle); text-align: center; padding: 20px 10px; line-height: 1.5; }
 
+/* ============================================================
+   MODAL (confirm)
+   ============================================================ */
+.modal {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal.on { display: flex; }
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 160ms var(--ease);
+}
+.modal-panel {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xl);
+  width: min(460px, calc(100% - 32px));
+  padding: var(--s-6);
+  animation: modalIn 220ms var(--ease);
+}
+@keyframes fadeIn { from { opacity: 0; } }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } }
+
+.modal-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.modal-title { flex: 1; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+.modal-x {
+  width: 28px; height: 28px; margin: -4px -4px 0 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-sm); color: var(--text-subtle);
+  background: transparent; border: 0; cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.modal-x:hover { background: var(--surface-2); color: var(--text); }
+.modal-body { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
 /* ---------- Toast ---------- */
 .toast-host {
   position: fixed; bottom: 24px; right: 24px; z-index: 600;

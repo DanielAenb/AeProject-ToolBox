@@ -91,6 +91,22 @@ const ROLES = [
 ];
 
 /* ============================================================
+   CONFIRM MODAL
+   ============================================================ */
+let confirmCb = null;
+function openConfirm(title, body, label, cb) {
+  $("#confirmTitle").textContent = title;
+  $("#confirmBody").textContent = body;
+  $("#confirmOk").textContent = label || "Confirmar";
+  confirmCb = cb;
+  $("#confirmModal").classList.add("on");
+}
+function closeConfirm() {
+  $("#confirmModal").classList.remove("on");
+  confirmCb = null;
+}
+
+/* ============================================================
    ESTADO
    ============================================================ */
 let state = {
@@ -102,8 +118,8 @@ let state = {
   gridCols: 4,
 };
 
-function saveSettings() {
-  dbPut("settings", {
+async function saveSettings() {
+  await dbPut("settings", {
     pool: state.pool,
     roles: state.roles,
     activeView: state.activeView,
@@ -126,7 +142,6 @@ async function loadAll() {
     state.roles = {};
     ROLES.forEach(r => { state.roles[r.id] = null; });
   }
-  // Asegurar todos los roles
   ROLES.forEach(r => {
     if (typeof state.roles[r.id] === "undefined") state.roles[r.id] = null;
   });
@@ -181,12 +196,10 @@ function extractPalette(imgEl, numColors = 8) {
     return [];
   }
 
-  // Cuantizar en buckets y guardar sumas para promediar
   const buckets = {};
   for (let i = 0; i < data.length; i += 4) {
     const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
     if (a < 128) continue;
-    // Ignorar casi-blanco puro y casi-negro puro (suelen ser fondos poco útiles)
     const maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
     if (maxC > 245 && minC > 240) continue;
     if (maxC < 15) continue;
@@ -204,7 +217,6 @@ function extractPalette(imgEl, numColors = 8) {
     .map(b => ({ r: b.r / b.count, g: b.g / b.count, b: b.b / b.count, count: b.count }))
     .sort((a, b) => b.count - a.count);
 
-  // Seleccionar los más distintos entre sí
   const picked = [];
   const MIN_DIST = 40;
   for (const c of list) {
@@ -214,7 +226,6 @@ function extractPalette(imgEl, numColors = 8) {
     }
   }
 
-  // Si no conseguimos suficientes, bajamos el umbral
   if (picked.length < numColors) {
     for (const c of list) {
       if (picked.every(p => colorDistance(p, c) > 20)) {
@@ -292,14 +303,20 @@ async function deleteImage(id) {
   renderAll();
 }
 
-async function clearAll() {
+function clearAll() {
   if (state.images.length === 0) return;
-  if (!confirm("¿Vaciar toda la biblioteca? Esta acción no se puede deshacer.")) return;
-  state.images = [];
-  state.selectedImageId = null;
-  await dbClear("images");
-  renderAll();
-  toast("Biblioteca vaciada", "", "info");
+  openConfirm(
+    "Vaciar biblioteca",
+    "Se eliminarán todas las imágenes. El pool y los roles asignados no se tocan. Esta acción no se puede deshacer.",
+    "Vaciar",
+    async () => {
+      state.images = [];
+      state.selectedImageId = null;
+      await dbClear("images");
+      renderAll();
+      toast("Biblioteca vaciada", "", "info");
+    }
+  );
 }
 
 /* ============================================================
@@ -323,9 +340,17 @@ function removeFromPool(hex) {
 
 function clearPool() {
   if (state.pool.length === 0) return;
-  state.pool = [];
-  saveSettings();
-  renderAll();
+  openConfirm(
+    "Vaciar pool",
+    "Se eliminarán todos los colores del pool. Los roles asignados no se tocan.",
+    "Vaciar",
+    async () => {
+      state.pool = [];
+      await saveSettings();
+      renderAll();
+      toast("Pool vaciado", "", "info");
+    }
+  );
 }
 
 /* ============================================================
@@ -394,12 +419,11 @@ function renderBiblioteca() {
   `).join("");
 
   $$(".lib-item").forEach((node, i) => {
-    node.addEventListener("click", e => {
+    node.addEventListener("click", async e => {
       if (e.target.closest(".li-remove")) return;
       state.selectedImageId = state.images[i].id;
-      saveSettings();
+      await saveSettings();
       renderAll();
-      // En la pestaña moodboard, hacer scroll al item
       if (state.activeView === "moodboard") {
         setTimeout(() => {
           const it = $(`.mb-grid-item[data-id="${state.images[i].id}"]`);
@@ -423,7 +447,6 @@ function renderView() {
   if (state.activeView === "paleta")     content.innerHTML = renderPaletaView();
   if (state.activeView === "preview")    content.innerHTML = renderPreviewView();
 
-  // Bindings según vista
   bindViewEvents();
   $$(".vt-btn").forEach(t => t.classList.toggle("active", t.dataset.view === state.activeView));
 }
@@ -593,11 +616,10 @@ function renderPreviewView() {
    Bindings de la vista activa
    ============================================================ */
 function bindViewEvents() {
-  // Moodboard
-  $$(".mb-grid-item").forEach(el => el.addEventListener("click", e => {
+  $$(".mb-grid-item").forEach(el => el.addEventListener("click", async e => {
     if (e.target.closest(".mbx")) return;
     state.selectedImageId = el.dataset.id;
-    saveSettings();
+    await saveSettings();
     renderAll();
   }));
   $$("[data-del-mb]").forEach(b => b.addEventListener("click", e => {
@@ -625,7 +647,6 @@ function bindViewEvents() {
     renderAll();
   }));
 
-  // Paleta
   const poolClear = $("#poolClearBtn");
   if (poolClear) poolClear.addEventListener("click", clearPool);
 
@@ -635,7 +656,6 @@ function bindViewEvents() {
     renderAll();
   }));
 
-  // Drag pool → role
   let dragging = null;
   $$("[data-pool-hex]").forEach(el => {
     el.draggable = true;
@@ -661,10 +681,8 @@ function bindViewEvents() {
     });
   });
 
-  // Click también asigna (fallback para touch)
   $$("[data-pool-hex]").forEach(el => el.addEventListener("click", () => {
     const hex = el.dataset.poolHex;
-    // Si hay un rol "seleccionado" o si hay solo uno vacío, asignar
     const emptyRole = ROLES.find(r => !state.roles[r.id]);
     if (emptyRole) {
       assignRole(emptyRole.id, hex);
@@ -687,7 +705,6 @@ function renderContrast() {
   const r = state.roles;
   const el = $("#contrastPanel");
 
-  // Pares de interés
   const pairs = [
     { a: "text", b: "background", label: "Texto / Fondo" },
     { a: "text", b: "surface",    label: "Texto / Superficie" },
@@ -883,17 +900,17 @@ if (btnAddImgs2) btnAddImgs2.addEventListener("click", () => $("#fileInput").cli
 $("#fileInput").addEventListener("change", e => handleFiles(e.target.files));
 $("#btnClearImgs").addEventListener("click", clearAll);
 
-$$(".vt-btn").forEach(t => t.addEventListener("click", () => {
+$$(".vt-btn").forEach(t => t.addEventListener("click", async () => {
   state.activeView = t.dataset.view;
-  saveSettings();
+  await saveSettings();
   renderView();
 }));
 
-$("#btnGridToggle").addEventListener("click", () => {
+$("#btnGridToggle").addEventListener("click", async () => {
   const options = [2, 3, 4, 5];
   const idx = options.indexOf(state.gridCols);
   state.gridCols = options[(idx + 1) % options.length];
-  saveSettings();
+  await saveSettings();
   renderView();
 });
 
@@ -924,6 +941,15 @@ document.addEventListener("paste", e => {
   }
   if (files.length) handleFiles(files);
 });
+
+// Confirm modal
+$("#confirmOk").addEventListener("click", () => {
+  if (typeof confirmCb === "function") confirmCb();
+  closeConfirm();
+});
+$$("[data-close]").forEach(n => n.addEventListener("click", () => {
+  n.closest(".modal").classList.remove("on");
+}));
 
 /* Theme toggle */
 (function () {

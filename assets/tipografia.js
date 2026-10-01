@@ -45,43 +45,35 @@ const FUENTE_FALLBACK = {
 
 /* ============================================================
    PAREJAS · 18 curadas
-   displayWord / bodyWord se muestran en la tarjeta de preview
    ============================================================ */
 const PAREJAS_DEFAULT = [
-  /* ELEGANTE */
   { id:"el-1", pers:"elegante", nombre:"Alta costura",  display:"Playfair Display",     body:"Lora",              displayWord:"Timeless",    bodyWord:"Grace",     desc:"Clásica, editorial, sofisticada" },
   { id:"el-2", pers:"elegante", nombre:"Minimal chic",  display:"Cormorant Garamond",   body:"Inter",             displayWord:"Delicate",    bodyWord:"Touch",     desc:"Delicada, ligera, moderna" },
   { id:"el-3", pers:"elegante", nombre:"Contemporánea", display:"DM Serif Display",     body:"DM Sans",           displayWord:"Elegant",     bodyWord:"Form",      desc:"Serif moderna con body geométrico" },
 
-  /* MINIMALISTA */
   { id:"mi-1", pers:"minimalista", nombre:"Nórdica",   display:"Space Grotesk",        body:"Inter",             displayWord:"Modern",      bodyWord:"Simplicity", desc:"Funcional, limpia, contemporánea" },
   { id:"mi-2", pers:"minimalista", nombre:"Neutra",    display:"Manrope",              body:"Inter",             displayWord:"Effortless",  bodyWord:"Charm",     desc:"Silenciosa, equilibrada, atemporal" },
   { id:"mi-3", pers:"minimalista", nombre:"Limpia",    display:"Archivo",              body:"Work Sans",         displayWord:"Sleek",       bodyWord:"Simplicity", desc:"Grotesca, sistemática, industrial" },
 
-  /* EDITORIAL */
   { id:"ed-1", pers:"editorial", nombre:"Revista",     display:"Fraunces",             body:"Source Serif 4",    displayWord:"Editorial",   bodyWord:"Narrative", desc:"Serif expresiva con cuerpo clásico" },
   { id:"ed-2", pers:"editorial", nombre:"Suplemento",  display:"Playfair Display",     body:"Inter",             displayWord:"Headline",    bodyWord:"Story",     desc:"Titulares dramáticos, cuerpo neutro" },
   { id:"ed-3", pers:"editorial", nombre:"Long-form",   display:"Lora",                 body:"Karla",             displayWord:"Reader",      bodyWord:"Comfort",   desc:"Serif cálida con sans humanista" },
 
-  /* REBELDE */
   { id:"re-1", pers:"rebelde", nombre:"Vanguardia",    display:"Syne",                 body:"Space Grotesk",     displayWord:"Standout",    bodyWord:"Statement", desc:"Rompe la retícula, carácter fuerte" },
   { id:"re-2", pers:"rebelde", nombre:"Manifiesto",    display:"Bebas Neue",           body:"Inter",             displayWord:"LOUD",        bodyWord:"Clear",     desc:"Condensada, directa, tipo póster" },
   { id:"re-3", pers:"rebelde", nombre:"Brutalist",     display:"Big Shoulders Display", body:"JetBrains Mono",   displayWord:"Raw",         bodyWord:"Signal",    desc:"Industrial, brutalista, técnica" },
 
-  /* CÁLIDA */
   { id:"ca-1", pers:"calida", nombre:"Artesanal",      display:"Fraunces",             body:"DM Sans",           displayWord:"Whimsy",      bodyWord:"Warm",      desc:"Serif humanista con cuerpo amable" },
   { id:"ca-2", pers:"calida", nombre:"Íntima",         display:"Cormorant Garamond",   body:"Lora",              displayWord:"Soft",        bodyWord:"Whisper",   desc:"Delicada, cercana, literaria" },
   { id:"ca-3", pers:"calida", nombre:"Amable",         display:"DM Serif Display",     body:"Plus Jakarta Sans", displayWord:"Friendly",    bodyWord:"Voice",     desc:"Serif suave con body geométrico" },
 
-  /* TÉCNICA */
   { id:"te-1", pers:"tecnica", nombre:"Developer",     display:"Space Grotesk",        body:"IBM Plex Mono",     displayWord:"Signal",      bodyWord:"System",    desc:"Grotesca moderna con mono funcional" },
   { id:"te-2", pers:"tecnica", nombre:"Data",          display:"Archivo",              body:"JetBrains Mono",    displayWord:"Metric",      bodyWord:"Value",     desc:"Sistemática, densa, para datos" },
   { id:"te-3", pers:"tecnica", nombre:"Innovación",    display:"Syne",                 body:"Space Mono",        displayWord:"Future",      bodyWord:"Protocol",  desc:"Experimental con cuerpo retro-técnico" },
 ];
 
 /* ============================================================
-   NIVELES · jerarquía tipográfica
-   group: agrupación visual en la tab Sistema
+   NIVELES
    ============================================================ */
 const NIVELES = [
   { id:"h1",       label:"H1",           group:"Headings",  familia:"display", ratioPow:4,    defaultWeight:700, defaultLH:1.05, defaultLS:-0.03 },
@@ -150,6 +142,7 @@ function load() {
   const s = store.get(LS_KEY);
   if (s) state = { ...state, ...s };
   if (!Array.isArray(state.customParejas)) state.customParejas = [];
+  if (!Array.isArray(state.presets)) state.presets = [];
   initNiveles();
 }
 
@@ -213,6 +206,22 @@ function toast(title, desc = "", variant = "brand") {
     el.style.transition = "opacity .3s";
     setTimeout(() => el.remove(), 300);
   }, 3600);
+}
+
+/* ============================================================
+   CONFIRM MODAL
+   ============================================================ */
+let confirmCb = null;
+function openConfirm(title, body, label, cb) {
+  $("#confirmTitle").textContent = title;
+  $("#confirmBody").textContent = body;
+  $("#confirmOk").textContent = label || "Confirmar";
+  confirmCb = cb;
+  $("#confirmModal").classList.add("on");
+}
+function closeConfirm() {
+  $("#confirmModal").classList.remove("on");
+  confirmCb = null;
 }
 
 /* ============================================================
@@ -327,8 +336,18 @@ function renderPresets() {
     toast("Preset cargado", pr.nombre, "success");
   }));
   $$("[data-del-preset]").forEach(b => b.addEventListener("click", () => {
-    state.presets = state.presets.filter(x => x.id !== b.dataset.delPreset);
-    save(); renderPresets();
+    const pr = state.presets.find(x => x.id === b.dataset.delPreset);
+    if (!pr) return;
+    openConfirm(
+      "Eliminar preset",
+      `Se eliminará "${pr.nombre}". Esta acción no se puede deshacer.`,
+      "Eliminar",
+      () => {
+        state.presets = state.presets.filter(x => x.id !== pr.id);
+        save(); renderPresets();
+        toast("Preset eliminado", pr.nombre, "info");
+      }
+    );
   }));
 }
 
@@ -376,13 +395,11 @@ function renderSistemaView() {
   const sys = systemData();
   const displayStack = fontStack(p.display);
 
-  // Agrupar niveles
   const groups = {};
   sys.forEach(n => {
     (groups[n.group] = groups[n.group] || []).push(n);
   });
 
-  // Tokens por grupo de tokens (family, weight, size)
   const tokensHTML = `
     <div class="sys-tokens-table-wrap">
       <table class="sys-tokens-table">
@@ -403,7 +420,6 @@ function renderSistemaView() {
     </div>
   `;
 
-  // Niveles
   const levelsHTML = Object.entries(groups).map(([groupName, items]) => `
     <div class="sys-section-head">${escapeHTML(groupName)}</div>
     ${items.map(n => `
@@ -431,7 +447,6 @@ function renderSistemaView() {
   return `
     <div class="sistema-view">
 
-      <!-- Hero -->
       <div class="sys-hero">
         <div class="sys-hero-left">
           <div class="hero-specimen" style="font-family:${displayStack};">
@@ -455,13 +470,11 @@ function renderSistemaView() {
         </div>
       </div>
 
-      <!-- Tokens -->
       <div class="sys-section">
         <div class="sys-section-head">Tokens</div>
         <div class="sys-tokens">${tokensHTML}</div>
       </div>
 
-      <!-- Niveles -->
       ${levelsHTML}
 
     </div>
@@ -479,7 +492,6 @@ function renderGuiaView() {
   return `
     <div class="guia-view">
 
-      <!-- Card 1: Line Height -->
       <div class="guia-card">
         <div class="gc-head">
           <div class="gc-title">Line Height</div>
@@ -499,7 +511,6 @@ function renderGuiaView() {
         <div class="gc-footer">This range just hits perfect</div>
       </div>
 
-      <!-- Card 2: Font Size Scale -->
       <div class="guia-card">
         <div class="gc-head">
           <div class="gc-title">Font Size Scale</div>
@@ -518,7 +529,6 @@ function renderGuiaView() {
         <div class="gc-footer">A consistent scale feels intentional, not random</div>
       </div>
 
-      <!-- Card 3: Tracking -->
       <div class="guia-card">
         <div class="gc-head">
           <div class="gc-title">Tracking</div>
@@ -535,7 +545,6 @@ function renderGuiaView() {
         <div class="gc-footer">Espacio entre letras, no entre palabras</div>
       </div>
 
-      <!-- Card 4: Rules -->
       <div class="guia-card light">
         <div class="gc-head">
           <div class="gc-title" style="color:var(--text)">Reglas</div>
@@ -552,7 +561,6 @@ function renderGuiaView() {
         <div class="gc-footer">System rules · v1</div>
       </div>
 
-      <!-- Card 5: Current system preview -->
       <div class="guia-card light">
         <div class="gc-head">
           <div class="gc-title" style="color:var(--text)">Tu sistema</div>
@@ -579,7 +587,6 @@ function renderView() {
   if (state.activeView === "sistema")  content.innerHTML = renderSistemaView();
   if (state.activeView === "guia")     content.innerHTML = renderGuiaView();
 
-  // Bindings
   $$("[data-pareja-card]").forEach(b => b.addEventListener("click", () => {
     state.parejaId = b.dataset.parejaCard;
     save(); renderAll();
@@ -589,7 +596,6 @@ function renderView() {
     save(); renderAll();
   }));
 
-  // Tabs
   $$(".vt-btn").forEach(t => t.classList.toggle("active", t.dataset.view === state.activeView));
 }
 
@@ -924,11 +930,17 @@ function downloadText(text, filename, mime) {
 /* ============================================================
    PRESETS
    ============================================================ */
-function savePreset() {
+function openSavePresetModal() {
   const p = pareja(state.parejaId);
   const def = `${p.nombre} · ${state.baseSize}px · ${state.ratio}`;
-  const nombre = prompt("Nombre del preset:", def);
-  if (!nombre) return;
+  $("#presetName").value = def;
+  $("#savePresetModal").classList.add("on");
+  setTimeout(() => { $("#presetName").focus(); $("#presetName").select(); }, 60);
+}
+
+function confirmSavePreset() {
+  const nombre = $("#presetName").value.trim();
+  if (!nombre) { toast("Nombre requerido", "", "danger"); return; }
 
   state.presets.unshift({
     id: "pr_" + Date.now(),
@@ -942,7 +954,9 @@ function savePreset() {
       niveles: JSON.parse(JSON.stringify(state.niveles)),
     },
   });
-  save(); renderPresets();
+  save();
+  $("#savePresetModal").classList.remove("on");
+  renderPresets();
   toast("Preset guardado", nombre, "success");
 }
 
@@ -956,7 +970,6 @@ function openAddPareja() {
   $("#npPers").innerHTML = PERSONALIDADES.map(p => `
     <button class="filter-chip" data-np-pers="${p.id}">${escapeHTML(p.label)}</button>
   `).join("");
-  // Marca la personalidad actual como default
   const current = PERSONALIDADES.find(p => p.id === state.personalidad);
   if (current) {
     const btn = $(`[data-np-pers="${current.id}"]`);
@@ -1019,13 +1032,23 @@ $$(".vt-btn").forEach(t => t.addEventListener("click", () => {
   save(); renderView();
 }));
 
-$("#btnSavePreset").addEventListener("click", savePreset);
+$("#btnSavePreset").addEventListener("click", openSavePresetModal);
+$("#presetSave").addEventListener("click", confirmSavePreset);
+$("#presetName").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); confirmSavePreset(); }
+});
+
 $("#btnExportCSS").addEventListener("click", exportCSS);
 $("#btnExportJSON").addEventListener("click", exportJSONTokens);
 $("#btnExportHTML").addEventListener("click", exportHTMLRef);
 $("#btnExportPNG").addEventListener("click", exportPNG);
 $("#btnAddPareja").addEventListener("click", openAddPareja);
 $("#npSave").addEventListener("click", saveNewPareja);
+
+$("#confirmOk").addEventListener("click", () => {
+  if (typeof confirmCb === "function") confirmCb();
+  closeConfirm();
+});
 
 $$("[data-close]").forEach(n => n.addEventListener("click", () => {
   n.closest(".modal").classList.remove("on");
